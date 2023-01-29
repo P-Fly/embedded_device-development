@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\driver\STM32WBxx\hal\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\framework\inc;..\..\..\framework\inc\base;..\..\..\utils\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -713,6 +713,11 @@
               <FileName>init.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\framework\src\base\init.c</FilePath>
+            </File>
+            <File>
+              <FileName>object.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\base\object.c</FilePath>
             </File>
           </Files>
         </Group>

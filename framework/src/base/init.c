@@ -17,7 +17,7 @@
  */
 
 #include "cmsis_os.h"
-#include "framework_conf.h"
+#include "framework.h"
 
 /**
  * @brief   Startup hardware early.
@@ -71,6 +71,20 @@ const osThreadAttr_t init_attr = {
  */
 static void init_thread(void* argument)
 {
+    int32_t ret;
+
+    (void)argument;
+
+	ret = object_init();
+	if (ret)
+    {   
+		//pr_error("Some objects initialize failed.");
+    }
+	else
+    {   
+		//pr_info("All objects initialized.");
+    }
+
     while (1)
     {
         ;
