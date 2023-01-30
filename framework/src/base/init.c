@@ -71,23 +71,27 @@ const osThreadAttr_t init_attr = {
  */
 static void init_thread(void* argument)
 {
+    osStatus_t stat;
     int32_t ret;
 
     (void)argument;
 
-	ret = object_init();
-	if (ret)
-    {   
-		//pr_error("Some objects initialize failed.");
-    }
-	else
-    {   
-		//pr_info("All objects initialized.");
+    ret = object_init();
+    if (ret)
+    {
+        pr_error("Some objects initialize failed.");
     }
 
-    while (1)
+    hardware_later_startup();
+
+    osDelay(500 * osKernelGetTickFreq() / 1000);
+
+    stat = osThreadTerminate(osThreadGetId());
+    if (stat != osOK)
     {
-        ;
+        pr_error("Terminate thread <%s> failed, stat = %d.",
+                 osThreadGetName(osThreadGetId()),
+                 stat);
     }
 }
 
@@ -105,16 +109,19 @@ int main(int argc, char* argv[])
     stat = osKernelInitialize();
     if (stat != osOK)
     {
+        pr_error("Kernel initialize failed, stat = %d.", stat);
     }
 
     thread_id = osThreadNew(init_thread, NULL, &init_attr);
     if (!thread_id)
     {
+        pr_error("Create thread <%s> failed.", init_attr.name);
     }
 
     stat = osKernelStart();
     if (stat != osOK)
     {
+        pr_error("Kernel start failed, stat = %d.", stat);
     }
 
     /* The program is undefined, if the code reaches this point. */

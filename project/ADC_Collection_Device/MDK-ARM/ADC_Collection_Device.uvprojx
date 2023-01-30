@@ -311,7 +311,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\framework\inc;..\..\..\framework\inc\base;..\..\..\utils\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\dbg_trace\inc;..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx;..\..\..\framework\inc;..\..\..\framework\inc\base;..\..\..\utils\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -380,6 +380,13 @@
       <Groups>
         <Group>
           <GroupName>application</GroupName>
+          <Files>
+            <File>
+              <FileName>hardware_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\hardware_if.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>driver\startup</GroupName>
@@ -703,6 +710,21 @@
               <FileName>hooks.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\middleware\FreeRTOS\Source\hooks\hooks.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\debug_module\dbg_trace</GroupName>
+          <Files>
+            <File>
+              <FileName>dbg_trace.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\debug_module\dbg_trace\src\dbg_trace.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32wbxx_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx\stm32wbxx_uart.c</FilePath>
             </File>
           </Files>
         </Group>

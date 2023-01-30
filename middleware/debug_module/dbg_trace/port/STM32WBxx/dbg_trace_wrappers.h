@@ -16,16 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __FRAMEWORK_H__
-#define __FRAMEWORK_H__
+#ifndef __DBG_TRACE_WRAPPERS_H__
+#define __DBG_TRACE_WRAPPERS_H__
 
 #include <stddef.h>
 #include <stdint.h>
+#include "stm32wbxx_uart.h"
 
-#include "framework_conf.h"
-#include "err.h"
-#include "object.h"
-#include "version.h"
-#include "log.h"
+static inline int32_t uart_init(void)
+{
+    return stm32wbxx_uart1_init();
+}
 
-#endif /* __FRAMEWORK_H__ */
+static inline int32_t uart_write(const void* tx_buf, int32_t tx_len)
+{
+    return stm32wbxx_uart1_write(tx_buf, tx_len);
+}
+
+#endif /* __DBG_TRACE_WRAPPERS_H__ */

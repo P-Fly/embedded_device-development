@@ -16,16 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __FRAMEWORK_H__
-#define __FRAMEWORK_H__
+#ifndef __DBG_TRACE_H__
+#define __DBG_TRACE_H__
 
-#include <stddef.h>
-#include <stdint.h>
+extern int32_t dbg_trace_output(const char* format, ...);
 
-#include "framework_conf.h"
-#include "err.h"
-#include "object.h"
-#include "version.h"
-#include "log.h"
-
-#endif /* __FRAMEWORK_H__ */
+#endif /* __DBG_TRACE_H__ */

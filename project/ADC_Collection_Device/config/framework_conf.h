@@ -23,4 +23,8 @@
 #define CONFIG_INIT_THREAD_STACK_SIZE 2048
 #define CONFIG_INIT_THREAD_PRIORITY osPriorityRealtime
 
+#define CONFIG_DBG_TRACE_NAME "dbg trace module"
+#define CONFIG_DBG_TRACE_LABEL dbg_trace_module
+#define CONFIG_DBG_TRACE_MAX_LEN 256
+
 #endif /* __FRAMEWORK_CONF__ */
