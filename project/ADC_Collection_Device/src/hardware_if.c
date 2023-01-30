@@ -22,6 +22,7 @@
 #include "stm32wbxx.h"
 
 static void hardware_print_info(void);
+static void hardware_clk_enable(void);
 
 #define CONFIG_CPU_NAME   "STM32WBxx"
 #define CONFIG_BOARD_NAME "P-NUCLEO-WB55"
@@ -36,6 +37,8 @@ static void hardware_print_info(void);
 void hardware_early_startup(void)
 {
     HAL_Init();
+
+    hardware_clk_enable();
 }
 
 /**
@@ -84,4 +87,20 @@ static void hardware_print_info(void)
     pr_info("System Clock: %d Hz", SystemCoreClock);
 
     pr_info("*************************************************************");
+}
+
+/**
+ * @brief   Enable peripheral clk.
+ *
+ * @retval  None.
+ */
+static void hardware_clk_enable(void)
+{
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+    __HAL_RCC_USART1_CLK_ENABLE();
 }

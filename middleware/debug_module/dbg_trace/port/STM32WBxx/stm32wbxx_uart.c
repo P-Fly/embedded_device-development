@@ -190,8 +190,6 @@ static void stm32wbxx_uart1_msp_init(UART_HandleTypeDef* uart)
 
     (void)memset(&gpio, 0, sizeof(gpio));
 
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-
     /**
      * USART1 GPIO Configuration
      * PB6 ------> USART1_TX
@@ -231,8 +229,6 @@ int32_t stm32wbxx_uart1_init(void)
     int32_t ret;
 
     (void)memset(&uart1_handle, 0, sizeof(stm32wbxx_uart_handle_t));
-
-    __HAL_RCC_USART1_CLK_ENABLE();
 
     uart1_handle.uart.Instance = USART1;
     uart1_handle.uart.Init.BaudRate = CONFIG_UART1_HW_BAUDRATE;
