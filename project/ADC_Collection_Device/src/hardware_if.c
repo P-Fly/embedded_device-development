@@ -62,6 +62,8 @@ static void hardware_print_info(void)
 {
     char version[25];
 
+    pr_info("");
+
     pr_info("*************************************************************");
 
     pr_info("%s - %s (Build %s %s)",
@@ -87,6 +89,8 @@ static void hardware_print_info(void)
     pr_info("System Clock: %d Hz", SystemCoreClock);
 
     pr_info("*************************************************************");
+
+    pr_info("");
 }
 
 /**

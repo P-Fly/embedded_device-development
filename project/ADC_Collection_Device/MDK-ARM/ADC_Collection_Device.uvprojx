@@ -741,6 +741,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\framework\src\base\object.c</FilePath>
             </File>
+            <File>
+              <FileName>service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\base\service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>services\led_service</GroupName>
+          <Files>
+            <File>
+              <FileName>led_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\services\led_service\led_service.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

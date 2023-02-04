@@ -90,18 +90,12 @@ typedef struct _object
 #define module_early_driver(name, label, probe, shutdown, intf, runtime, config) \
     __define_object(name, label, probe, shutdown, NULL, NULL, \
                     intf, runtime, config, 1)
-#define module_driver(name, label, probe, shutdown, intf, runtime, config) \
+#define module_middleware(name, label, probe, shutdown, intf, runtime, config) \
     __define_object(name, label, probe, shutdown, NULL, NULL, \
                     intf, runtime, config, 2)
-#define module_manager(name, label, probe, shutdown, intf, runtime, config) \
-    __define_object(name, label, probe, shutdown, NULL, NULL, \
-                    intf, runtime, config, 3)
 #define module_service(name, label, probe, shutdown, intf, runtime, config) \
     __define_object(name, label, probe, shutdown, NULL, NULL, \
-                    intf, runtime, config, 4)
-#define module_application(name, label, probe, shutdown, intf, runtime, config) \
-    __define_object(name, label, probe, shutdown, NULL, NULL, \
-                    intf, runtime, config, 5)
+                    intf, runtime, config, 3)
 
 extern int32_t object_init(void);
 extern int32_t object_deinit(void);

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
 
@@ -71,6 +72,7 @@ const osThreadAttr_t init_attr = {
  */
 static void init_thread(void* argument)
 {
+    message_t message;
     osStatus_t stat;
     int32_t ret;
 
@@ -85,6 +87,23 @@ static void init_thread(void* argument)
     hardware_later_startup();
 
     osDelay(500 * osKernelGetTickFreq() / 1000);
+
+    (void)memset(&message, 0, sizeof(message));
+
+    message.id = MSG_ID_SYS_STARTUP_COMPLETED;
+    ret = service_broadcast_message(&message);
+    if (ret)
+    {
+        pr_error("Broadcast message %s(0x%x) failed.",
+                 msg_id_to_name(message.id),
+                 message.id);
+    }
+    else
+    {
+        pr_info("Broadcast message %s(0x%x) succeed.",
+                msg_id_to_name(message.id),
+                message.id);
+    }
 
     stat = osThreadTerminate(osThreadGetId());
     if (stat != osOK)

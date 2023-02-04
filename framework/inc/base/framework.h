@@ -27,5 +27,7 @@
 #include "object.h"
 #include "version.h"
 #include "log.h"
+#include "message.h"
+#include "service.h"
 
 #endif /* __FRAMEWORK_H__ */
