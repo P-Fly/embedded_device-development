@@ -68,7 +68,7 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
         return -EINVAL;
     }
 
-    HAL_NVIC_DisableIRQ(USART1_IRQn);
+    taskENTER_CRITICAL();
 
     for (i = 0; i < tx_len; i++)
     {
@@ -79,7 +79,7 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
         }
     }
 
-    HAL_NVIC_EnableIRQ(USART1_IRQn);
+    portEXIT_CRITICAL();
 
     /* Enable the UART Transmit data register empty Interrupt */
     __HAL_UART_ENABLE_IT(&uart1_handle.uart, UART_IT_TXE);
