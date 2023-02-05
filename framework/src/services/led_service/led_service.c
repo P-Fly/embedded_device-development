@@ -19,11 +19,12 @@
 #include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
+#include "led_manager.h"
 
-#define led_error(str, ...)   pr_error(str, ##__VA_ARGS__)
-#define led_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
-#define led_info(str, ...)    pr_info(str, ##__VA_ARGS__)
-#define led_debug(str, ...)   pr_debug(str, ##__VA_ARGS__)
+#define led_error(str, ...)   pr_error(str, ## __VA_ARGS__)
+#define led_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
+#define led_info(str, ...)    pr_info(str, ## __VA_ARGS__)
+#define led_debug(str, ...)   pr_debug(str, ## __VA_ARGS__)
 
 /**
  * @brief   Private structure for led service.
@@ -79,15 +80,45 @@ static void led_service_message_handler(const object*           obj,
                                         const message_t* const  message)
 {
     led_service_priv_t* priv_data = service_get_priv_data(obj);
+    led_id_e id;
+    led_type_e type;
+    int32_t ret;
 
     led_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
-            obj->name,
-            msg_id_to_name(message->id),
-            message->id,
-            message->param0,
-            message->param1,
-            message->param2,
-            message->param3);
+              obj->name,
+              msg_id_to_name(message->id),
+              message->id,
+              message->param0,
+              message->param1,
+              message->param2,
+              message->param3);
+
+    switch (message->id)
+    {
+    case MSG_ID_LED_SETUP:
+
+        id = (led_id_e)message->param0;
+        type = (led_type_e)message->param1;
+
+        ret = led_manager_setup(id, type);
+        if (ret)
+        {
+            pr_error("Service <%s> setup led %d, type %d failed, ret 0x%x.",
+                     obj->name,
+                     id,
+                     type,
+                     ret);
+        }
+        else
+        {
+            pr_info("Service <%s> setup led %d, type %d succeed.",
+                    obj->name,
+                    id,
+                    type);
+        }
+
+        break;
+    }
 }
 
 static led_service_priv_t led_service_priv;

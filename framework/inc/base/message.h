@@ -62,6 +62,17 @@ typedef struct
  */
 #define MSG_ID_SYS_HEARTBEAT (MSG_ID_SYS_SERVICE_BASE | 0x0002)
 
+/**
+ * @brief           Set led type.
+ *
+ * @message.id      MSG_ID_LED_SETUP
+ * @message.param0  led_id_e.
+ * @message.param1  led_type_e.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_LED_SETUP (MSG_ID_LED_SERVICE_BASE | 0x0001)
+
 typedef struct
 {
     uint32_t    id;
@@ -72,6 +83,7 @@ static const msg_recorder_t msg_recorder[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED, "SYS_STARTUP_COMPLETED" },
     { MSG_ID_SYS_HEARTBEAT,         "SYS_HEARTBEAT" },
+    { MSG_ID_LED_SETUP,             "LED_SETUP" },
 };
 
 static inline const char* msg_id_to_name(uint32_t id)

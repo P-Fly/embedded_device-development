@@ -16,22 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
+#ifndef __LED_MANAGER_H__
+#define __LED_MANAGER_H__
 
-/**
- * @brief   Function to malloc failed hook.
- */
-void vApplicationMallocFailedHook(void)
+typedef enum
 {
-    while(1);
-}
+    LED_TYPE_TURN_OFF = 0,
+    LED_TYPE_TURN_ON,
+    LED_TYPE_QUICK_FLASH,
+    LED_TYPE_SLOW_FLASH,
 
-/**
- * @brief   Function to stack overflow hook.
- */
-void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName)
+    LED_TYPE_BUTT,
+} led_type_e;
+
+typedef enum
 {
-    while(1);
-}
+    LED_ID_1 = 0,
+    LED_ID_2,
+    LED_ID_3,
 
+    LED_ID_BUTT,
+} led_id_e;
+
+extern int32_t led_manager_setup(led_id_e id, led_type_e type);
+
+#endif /* __LED_MANAGER_H__ */

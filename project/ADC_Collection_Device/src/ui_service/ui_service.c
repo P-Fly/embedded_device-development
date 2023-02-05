@@ -19,6 +19,7 @@
 #include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
+#include "led_manager.h"
 
 #define ui_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define ui_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
@@ -168,6 +169,8 @@ static void ui_service_message_handler(const object*            obj,
                                        const message_t* const   message)
 {
     ui_service_priv_t* priv_data = service_get_priv_data(obj);
+    message_t send_message;
+    int32_t ret;
     osStatus_t stat;
 
     (void)stat;
@@ -198,6 +201,62 @@ static void ui_service_message_handler(const object*            obj,
                 stat);
         }
 #endif
+
+        (void)memset(&send_message, 0, sizeof(send_message));
+        send_message.id = MSG_ID_LED_SETUP;
+        send_message.param0 = LED_ID_1;
+        send_message.param1 = LED_TYPE_QUICK_FLASH;
+        ret = service_broadcast_message(&send_message);
+        if (ret)
+        {
+            pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
+                     msg_id_to_name(send_message.id),
+                     send_message.id,
+                     ret);
+        }
+        else
+        {
+            pr_info("Broadcast message %s(0x%x) succeed.",
+                    msg_id_to_name(send_message.id),
+                    send_message.id);
+        }
+
+        send_message.id = MSG_ID_LED_SETUP;
+        send_message.param0 = LED_ID_2;
+        send_message.param1 = LED_TYPE_SLOW_FLASH;
+        ret = service_broadcast_message(&send_message);
+        if (ret)
+        {
+            pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
+                     msg_id_to_name(send_message.id),
+                     send_message.id,
+                     ret);
+        }
+        else
+        {
+            pr_info("Broadcast message %s(0x%x) succeed.",
+                    msg_id_to_name(send_message.id),
+                    send_message.id);
+        }
+
+        send_message.id = MSG_ID_LED_SETUP;
+        send_message.param0 = LED_ID_3;
+        send_message.param1 = LED_TYPE_QUICK_FLASH;
+        ret = service_broadcast_message(&send_message);
+        if (ret)
+        {
+            pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
+                     msg_id_to_name(send_message.id),
+                     send_message.id,
+                     ret);
+        }
+        else
+        {
+            pr_info("Broadcast message %s(0x%x) succeed.",
+                    msg_id_to_name(send_message.id),
+                    send_message.id);
+        }
+
         break;
 
     case MSG_ID_SYS_HEARTBEAT:

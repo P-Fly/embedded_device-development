@@ -16,22 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
+#ifndef __STM32WBXX_LED_H__
+#define __STM32WBXX_LED_H__
 
-/**
- * @brief   Function to malloc failed hook.
- */
-void vApplicationMallocFailedHook(void)
-{
-    while(1);
-}
+#include <stddef.h>
+#include <stdint.h>
+#include "led_manager.h"
 
-/**
- * @brief   Function to stack overflow hook.
- */
-void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName)
-{
-    while(1);
-}
+extern void stm32wbxx_led_init(void);
+extern void stm32wbxx_led_deinit(void);
+extern void stm32wbxx_led_on(led_id_e id);
+extern void stm32wbxx_led_off(led_id_e id);
+extern void stm32wbxx_led_toggle(led_id_e id);
 
+#endif /* __STM32WBXX_LED_H__ */
