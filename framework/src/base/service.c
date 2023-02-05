@@ -130,9 +130,10 @@ static int32_t service_deinit(const object* obj)
         stat = osThreadTerminate(svc->thread_id);
         if (stat != osOK)
         {
-            pr_error("Service <%s> terminate thread <%s> failed.",
+            pr_error("Service <%s> terminate thread <%s> failed, stat 0x%x",
                      svc->name,
-                     osThreadGetName(svc->thread_id));
+                     osThreadGetName(svc->thread_id),
+                     stat);
         }
         else
         {
@@ -147,8 +148,9 @@ static int32_t service_deinit(const object* obj)
         stat = osMessageQueueDelete(svc->queue_id);
         if (stat != osOK)
         {
-            pr_error("Service <%s> delete message queue failed.",
-                     svc->name);
+            pr_error("Service <%s> delete message queue failed, stat 0x%x",
+                     svc->name,
+                     stat);
         }
         else
         {

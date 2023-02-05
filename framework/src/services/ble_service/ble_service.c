@@ -20,67 +20,67 @@
 #include "cmsis_os.h"
 #include "framework.h"
 
-#define led_error(str, ...)   pr_error(str, ##__VA_ARGS__)
-#define led_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
-#define led_info(str, ...)    pr_info(str, ##__VA_ARGS__)
-#define led_debug(str, ...)   pr_debug(str, ##__VA_ARGS__)
+#define ble_error(str, ...)   pr_error(str, ##__VA_ARGS__)
+#define ble_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
+#define ble_info(str, ...)    pr_info(str, ##__VA_ARGS__)
+#define ble_debug(str, ...)   //pr_debug(str, ##__VA_ARGS__)
 
 /**
- * @brief   Private structure for led service.
+ * @brief   Private structure for ble service.
  */
 typedef struct
 {
     int32_t reserved;
-} led_service_priv_t;
+} ble_service_priv_t;
 
 /**
- * @brief   Initialize the led service.
+ * @brief   Initialize the ble service.
  *
  * @param   obj Pointer to the service object handle.
  *
  * @retval  Returns 0 on success, negative error code otherwise.
  */
-static int32_t led_service_init(const object* obj)
+static int32_t ble_service_init(const object* obj)
 {
-    led_service_priv_t* priv_data = service_get_priv_data(obj);
+    ble_service_priv_t* priv_data = service_get_priv_data(obj);
 
-    (void)memset(priv_data, 0, sizeof(led_service_priv_t));
+    (void)memset(priv_data, 0, sizeof(ble_service_priv_t));
 
-    led_info("Service <%s> initialize succeed.", obj->name);
+    ble_info("Service <%s> initialize succeed.", obj->name);
 
     return 0;
 }
 
 /**
- * @brief   Deinitialize the led service.
+ * @brief   Deinitialize the ble service.
  *
  * @param   obj Pointer to the service object handle.
  *
  * @retval  Returns 0 on success, negative error code otherwise.
  */
-static int32_t led_service_deinit(const object* obj)
+static int32_t ble_service_deinit(const object* obj)
 {
-    led_service_priv_t* priv_data = service_get_priv_data(obj);
+    ble_service_priv_t* priv_data = service_get_priv_data(obj);
 
-    led_info("Service <%s> deinitialize succeed.", obj->name);
+    ble_info("Service <%s> deinitialize succeed.", obj->name);
 
     return 0;
 }
 
 /**
- * @brief   Handle the led service message.
+ * @brief   Handle the ble service message.
  *
  * @param   obj Pointer to the service object handle.
  * @param   message Pointer to the received message.
  *
  * @retval  None.
  */
-static void led_service_message_handler(const object*           obj,
+static void ble_service_message_handler(const object*           obj,
                                         const message_t* const  message)
 {
-    led_service_priv_t* priv_data = service_get_priv_data(obj);
+    ble_service_priv_t* priv_data = service_get_priv_data(obj);
 
-    led_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
+    ble_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
             obj->name,
             msg_id_to_name(message->id),
             message->id,
@@ -90,24 +90,24 @@ static void led_service_message_handler(const object*           obj,
             message->param3);
 }
 
-static led_service_priv_t led_service_priv;
+static ble_service_priv_t ble_service_priv;
 
-static const service_config_t led_service_config =
+static const service_config_t ble_service_config =
 {
     .thread_attr    =
     {
-        .name       = CONFIG_LED_SERVICE_THREAD_NAME,
+        .name       = CONFIG_BLE_SERVICE_THREAD_NAME,
         .attr_bits  = osThreadDetached,
         .cb_mem     = NULL,
         .cb_size    = 0,
         .stack_mem  = NULL,
-        .stack_size = CONFIG_LED_SERVICE_THREAD_STACK_SIZE,
-        .priority   = CONFIG_LED_SERVICE_THREAD_PRIORITY,
+        .stack_size = CONFIG_BLE_SERVICE_THREAD_STACK_SIZE,
+        .priority   = CONFIG_BLE_SERVICE_THREAD_PRIORITY,
     },
 
     .queue_attr     =
     {
-        .name       = CONFIG_LED_SERVICE_QUEUE_NAME,
+        .name       = CONFIG_BLE_SERVICE_QUEUE_NAME,
         .attr_bits  = 0,
         .cb_mem     = NULL,
         .cb_size    = 0,
@@ -115,13 +115,13 @@ static const service_config_t led_service_config =
         .mq_size    = 0,
     },
 
-    .msg_count      = CONFIG_LED_SERVICE_MSG_COUNT,
+    .msg_count      = CONFIG_BLE_SERVICE_MSG_COUNT,
 };
 
-DECLARE_SERVICE(CONFIG_LED_SERVICE_NAME,
-                CONFIG_LED_SERVICE_LABEL,
-                &led_service_priv,
-                &led_service_config,
-                led_service_init,
-                led_service_deinit,
-                led_service_message_handler);
+DECLARE_SERVICE(CONFIG_BLE_SERVICE_NAME,
+                CONFIG_BLE_SERVICE_LABEL,
+                &ble_service_priv,
+                &ble_service_config,
+                ble_service_init,
+                ble_service_deinit,
+                ble_service_message_handler);

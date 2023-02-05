@@ -20,67 +20,67 @@
 #include "cmsis_os.h"
 #include "framework.h"
 
-#define led_error(str, ...)   pr_error(str, ##__VA_ARGS__)
-#define led_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
-#define led_info(str, ...)    pr_info(str, ##__VA_ARGS__)
-#define led_debug(str, ...)   pr_debug(str, ##__VA_ARGS__)
+#define key_error(str, ...)   pr_error(str, ##__VA_ARGS__)
+#define key_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
+#define key_info(str, ...)    pr_info(str, ##__VA_ARGS__)
+#define key_debug(str, ...)   //pr_debug(str, ##__VA_ARGS__)
 
 /**
- * @brief   Private structure for led service.
+ * @brief   Private structure for key service.
  */
 typedef struct
 {
     int32_t reserved;
-} led_service_priv_t;
+} key_service_priv_t;
 
 /**
- * @brief   Initialize the led service.
+ * @brief   Initialize the key service.
  *
  * @param   obj Pointer to the service object handle.
  *
  * @retval  Returns 0 on success, negative error code otherwise.
  */
-static int32_t led_service_init(const object* obj)
+static int32_t key_service_init(const object* obj)
 {
-    led_service_priv_t* priv_data = service_get_priv_data(obj);
+    key_service_priv_t* priv_data = service_get_priv_data(obj);
 
-    (void)memset(priv_data, 0, sizeof(led_service_priv_t));
+    (void)memset(priv_data, 0, sizeof(key_service_priv_t));
 
-    led_info("Service <%s> initialize succeed.", obj->name);
+    key_info("Service <%s> initialize succeed.", obj->name);
 
     return 0;
 }
 
 /**
- * @brief   Deinitialize the led service.
+ * @brief   Deinitialize the key service.
  *
  * @param   obj Pointer to the service object handle.
  *
  * @retval  Returns 0 on success, negative error code otherwise.
  */
-static int32_t led_service_deinit(const object* obj)
+static int32_t key_service_deinit(const object* obj)
 {
-    led_service_priv_t* priv_data = service_get_priv_data(obj);
+    key_service_priv_t* priv_data = service_get_priv_data(obj);
 
-    led_info("Service <%s> deinitialize succeed.", obj->name);
+    key_info("Service <%s> deinitialize succeed.", obj->name);
 
     return 0;
 }
 
 /**
- * @brief   Handle the led service message.
+ * @brief   Handle the key service message.
  *
  * @param   obj Pointer to the service object handle.
  * @param   message Pointer to the received message.
  *
  * @retval  None.
  */
-static void led_service_message_handler(const object*           obj,
+static void key_service_message_handler(const object*           obj,
                                         const message_t* const  message)
 {
-    led_service_priv_t* priv_data = service_get_priv_data(obj);
+    key_service_priv_t* priv_data = service_get_priv_data(obj);
 
-    led_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
+    key_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
             obj->name,
             msg_id_to_name(message->id),
             message->id,
@@ -90,24 +90,24 @@ static void led_service_message_handler(const object*           obj,
             message->param3);
 }
 
-static led_service_priv_t led_service_priv;
+static key_service_priv_t key_service_priv;
 
-static const service_config_t led_service_config =
+static const service_config_t key_service_config =
 {
     .thread_attr    =
     {
-        .name       = CONFIG_LED_SERVICE_THREAD_NAME,
+        .name       = CONFIG_KEY_SERVICE_THREAD_NAME,
         .attr_bits  = osThreadDetached,
         .cb_mem     = NULL,
         .cb_size    = 0,
         .stack_mem  = NULL,
-        .stack_size = CONFIG_LED_SERVICE_THREAD_STACK_SIZE,
-        .priority   = CONFIG_LED_SERVICE_THREAD_PRIORITY,
+        .stack_size = CONFIG_KEY_SERVICE_THREAD_STACK_SIZE,
+        .priority   = CONFIG_KEY_SERVICE_THREAD_PRIORITY,
     },
 
     .queue_attr     =
     {
-        .name       = CONFIG_LED_SERVICE_QUEUE_NAME,
+        .name       = CONFIG_KEY_SERVICE_QUEUE_NAME,
         .attr_bits  = 0,
         .cb_mem     = NULL,
         .cb_size    = 0,
@@ -115,13 +115,13 @@ static const service_config_t led_service_config =
         .mq_size    = 0,
     },
 
-    .msg_count      = CONFIG_LED_SERVICE_MSG_COUNT,
+    .msg_count      = CONFIG_KEY_SERVICE_MSG_COUNT,
 };
 
-DECLARE_SERVICE(CONFIG_LED_SERVICE_NAME,
-                CONFIG_LED_SERVICE_LABEL,
-                &led_service_priv,
-                &led_service_config,
-                led_service_init,
-                led_service_deinit,
-                led_service_message_handler);
+DECLARE_SERVICE(CONFIG_KEY_SERVICE_NAME,
+                CONFIG_KEY_SERVICE_LABEL,
+                &key_service_priv,
+                &key_service_config,
+                key_service_init,
+                key_service_deinit,
+                key_service_message_handler);

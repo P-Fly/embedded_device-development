@@ -758,6 +758,66 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>services\key_service</GroupName>
+          <Files>
+            <File>
+              <FileName>key_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\services\key_service\key_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>services\display_service</GroupName>
+          <Files>
+            <File>
+              <FileName>display_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\services\display_service\display_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>services\data_service</GroupName>
+          <Files>
+            <File>
+              <FileName>data_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\services\data_service\data_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>services\ble_service</GroupName>
+          <Files>
+            <File>
+              <FileName>ble_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\services\ble_service\ble_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>services\battery_service</GroupName>
+          <Files>
+            <File>
+              <FileName>battery_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\src\services\battery_service\battery_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>application\ui_service</GroupName>
+          <Files>
+            <File>
+              <FileName>ui_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\ui_service\ui_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>

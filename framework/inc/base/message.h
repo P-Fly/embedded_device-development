@@ -35,10 +35,10 @@ typedef struct
 #define MSG_ID_SYS_SERVICE_BASE     0x00000000
 #define MSG_ID_LED_SERVICE_BASE     0x00000100
 #define MSG_ID_KEY_SERVICE_BASE     0x00000200
-#define MSG_ID_DIS_SERVICE_BASE     0x00000300
-#define MSG_ID_ADC_SERVICE_BASE     0x00000400
+#define MSG_ID_DISPLAY_SERVICE_BASE 0x00000300
+#define MSG_ID_DATA_SERVICE_BASE    0x00000400
 #define MSG_ID_BLE_SERVICE_BASE     0x00000500
-#define MSG_ID_BAT_SERVICE_BASE     0x00000600
+#define MSG_ID_BATTERY_SERVICE_BASE 0x00000600
 
 /**
  * @brief           Notify system startup is completed.
@@ -51,6 +51,17 @@ typedef struct
  */
 #define MSG_ID_SYS_STARTUP_COMPLETED (MSG_ID_SYS_SERVICE_BASE | 0x0001)
 
+/**
+ * @brief           Notify system heartbeat.
+ *
+ * @message.id      MSG_ID_SYS_HEARTBEAT
+ * @message.param0  Increased counter value.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_SYS_HEARTBEAT (MSG_ID_SYS_SERVICE_BASE | 0x0002)
+
 typedef struct
 {
     uint32_t    id;
@@ -60,6 +71,7 @@ typedef struct
 static const msg_recorder_t msg_recorder[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED, "SYS_STARTUP_COMPLETED" },
+    { MSG_ID_SYS_HEARTBEAT,         "SYS_HEARTBEAT" },
 };
 
 static inline const char* msg_id_to_name(uint32_t id)

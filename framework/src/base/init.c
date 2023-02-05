@@ -89,14 +89,14 @@ static void init_thread(void* argument)
     osDelay(500 * osKernelGetTickFreq() / 1000);
 
     (void)memset(&message, 0, sizeof(message));
-
     message.id = MSG_ID_SYS_STARTUP_COMPLETED;
     ret = service_broadcast_message(&message);
     if (ret)
     {
-        pr_error("Broadcast message %s(0x%x) failed.",
+        pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
                  msg_id_to_name(message.id),
-                 message.id);
+                 message.id,
+                 ret);
     }
     else
     {
@@ -108,7 +108,7 @@ static void init_thread(void* argument)
     stat = osThreadTerminate(osThreadGetId());
     if (stat != osOK)
     {
-        pr_error("Terminate thread <%s> failed, stat = %d.",
+        pr_error("Terminate thread <%s> failed, stat %d.",
                  osThreadGetName(osThreadGetId()),
                  stat);
     }
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
     stat = osKernelInitialize();
     if (stat != osOK)
     {
-        pr_error("Kernel initialize failed, stat = %d.", stat);
+        pr_error("Kernel initialize failed, stat %d.", stat);
     }
 
     thread_id = osThreadNew(init_thread, NULL, &init_attr);
@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
     stat = osKernelStart();
     if (stat != osOK)
     {
-        pr_error("Kernel start failed, stat = %d.", stat);
+        pr_error("Kernel start failed, stat %d.", stat);
     }
 
     /* The program is undefined, if the code reaches this point. */
