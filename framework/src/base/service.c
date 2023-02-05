@@ -73,14 +73,14 @@ static int32_t service_init(const object*                   obj,
     if (!svc->queue_id)
     {
         pr_error("Service <%s> create message queue <%s> failed.",
-                 svc->name,
+                 obj->name,
                  config->queue_attr.name);
         return -EINVAL;
     }
     else
     {
         pr_info("Service <%s> create message queue <%s> succeed.",
-                svc->name,
+                obj->name,
                 config->queue_attr.name);
     }
 
@@ -90,14 +90,14 @@ static int32_t service_init(const object*                   obj,
     if (!svc->thread_id)
     {
         pr_error("Service <%s> create thread <%s> failed.",
-                 svc->name,
+                 obj->name,
                  config->thread_attr.name);
         return -EINVAL;
     }
     else
     {
         pr_info("Service <%s> create thread <%s> succeed.",
-                svc->name,
+                obj->name,
                 config->thread_attr.name);
     }
 
@@ -131,14 +131,14 @@ static int32_t service_deinit(const object* obj)
         if (stat != osOK)
         {
             pr_error("Service <%s> terminate thread <%s> failed, stat 0x%x",
-                     svc->name,
+                     obj->name,
                      osThreadGetName(svc->thread_id),
                      stat);
         }
         else
         {
             pr_info("Service <%s> terminate thread <%s> succeed.",
-                    svc->name,
+                    obj->name,
                     osThreadGetName(svc->thread_id));
         }
     }
@@ -149,13 +149,13 @@ static int32_t service_deinit(const object* obj)
         if (stat != osOK)
         {
             pr_error("Service <%s> delete message queue failed, stat 0x%x",
-                     svc->name,
+                     obj->name,
                      stat);
         }
         else
         {
             pr_info("Service <%s> delete message queue succeed.",
-                    svc->name);
+                    obj->name);
         }
     }
 
@@ -248,20 +248,6 @@ int32_t service_shutdown(const object* obj)
     pr_info("Object <%s> shutdown succeed.", obj->name);
 
     return 0;
-}
-
-/**
- * @brief   Get the name for service.
- *
- * @param   obj Pointer to the service object handle.
- *
- * @retval  Returns the name.
- */
-const char* service_get_name(const object* obj)
-{
-    service_t* svc = (service_t*)obj->object_data;
-
-    return svc->name;
 }
 
 /**

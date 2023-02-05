@@ -33,7 +33,7 @@ typedef struct
 {
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
     osTimerId_t monitor_timer;
-    uint32_t    monitor_interval;
+    uint32_t    monitor_interval_millisec;
     uint32_t    monitor_value;
 #endif
     int32_t     reserved;
@@ -89,7 +89,8 @@ static int32_t ui_service_init(const object* obj)
     (void)memset(priv_data, 0, sizeof(ui_service_priv_t));
 
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
-    priv_data->monitor_interval = CONFIG_UI_SERVICE_MONITOR_TIMER_INTERVAL;
+    priv_data->monitor_interval_millisec =
+        CONFIG_UI_SERVICE_MONITOR_TIMER_INTERVAL_MILLISEC;
     priv_data->monitor_value = 0;
     priv_data->monitor_timer = osTimerNew(
         ui_service_monitor_timer_callback,
@@ -190,7 +191,7 @@ static void ui_service_message_handler(const object*            obj,
 
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
         stat = osTimerStart(priv_data->monitor_timer,
-                            priv_data->monitor_interval * osKernelGetTickFreq() /
+                            priv_data->monitor_interval_millisec * osKernelGetTickFreq() /
                             1000);
         if (stat != osOK)
         {
@@ -263,7 +264,7 @@ static void ui_service_message_handler(const object*            obj,
 
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
         stat = osTimerStart(priv_data->monitor_timer,
-                            priv_data->monitor_interval * osKernelGetTickFreq() /
+                            priv_data->monitor_interval_millisec * osKernelGetTickFreq() /
                             1000);
         if (stat != osOK)
         {

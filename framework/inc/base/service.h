@@ -33,7 +33,6 @@ typedef struct _service_t service_t;
 typedef struct _service_t
 {
     const object*       owner;
-    const char* const   name;
     osThreadId_t        thread_id;
     osMessageQueueId_t  queue_id;
     void*               priv;
@@ -67,7 +66,6 @@ extern const service_intf_t service_intf;
 
 extern int32_t service_probe(const object* obj);
 extern int32_t service_shutdown(const object* obj);
-extern const char* service_get_name(const object* obj);
 extern osThreadId_t service_get_thread_id(const object* obj);
 extern osMessageQueueId_t service_get_queue_id(const object* obj);
 extern void* service_get_priv_data(const object* obj);
@@ -100,7 +98,6 @@ extern int32_t service_broadcast_message(const message_t* message);
     static service_t __service_def_ ## service_label \
     __attribute__((used, section("module_service"))) = { \
         .owner              = NULL, \
-        .name               = (service_name), \
         .thread_id          = NULL, \
         .queue_id           = NULL, \
         .init               = (init_fn), \
