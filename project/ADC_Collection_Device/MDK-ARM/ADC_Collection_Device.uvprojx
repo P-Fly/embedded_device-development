@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\dbg_trace\inc;..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\framework\inc;..\..\..\framework\inc\base;..\..\..\utils\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\dbg_trace\inc;..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\framework\inc;..\..\..\framework\inc\base;..\..\..\framework\src\services\led_service;..\..\..\utils\inc;..\src\ui_service</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

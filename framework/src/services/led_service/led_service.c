@@ -19,7 +19,7 @@
 #include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
-#include "led_manager.h"
+#include "led_service.h"
 
 #define led_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define led_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
@@ -119,6 +119,19 @@ static void led_service_message_handler(const object*           obj,
 
         break;
     }
+}
+
+int32_t led_service_setup_send(led_id_e id, led_type_e type)
+{
+    message_t message;
+
+    (void)memset(&message, 0, sizeof(message));
+
+    message.id = MSG_ID_LED_SETUP;
+    message.param0 = id;
+    message.param1 = type;
+
+    return service_broadcast_message(&message);
 }
 
 static led_service_priv_t led_service_priv;

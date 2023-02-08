@@ -19,7 +19,8 @@
 #include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
-#include "led_manager.h"
+#include "ui_service.h"
+#include "led_service.h"
 
 #define ui_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define ui_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
@@ -43,13 +44,25 @@ typedef struct
 /**
  * @brief   Attributes structure for monitor timer.
  */
-const osTimerAttr_t ui_service_monitor_timer_attr =
+static const osTimerAttr_t ui_service_monitor_timer_attr =
 {
     .name       = CONFIG_UI_SERVICE_MONITOR_TIMER_NAME,
     .attr_bits  = 0,
     .cb_mem     = NULL,
     .cb_size    = 0,
 };
+
+static int32_t ui_service_heartbeat_send(uint32_t count)
+{
+    message_t message;
+
+    (void)memset(&message, 0, sizeof(message));
+
+    message.id = MSG_ID_SYS_HEARTBEAT;
+    message.param0 = count;
+
+    return service_broadcast_message(&message);
+}
 
 /**
  * @brief   Monitor timer callback function.
@@ -58,20 +71,10 @@ static void ui_service_monitor_timer_callback(void* argument)
 {
     const object* obj = (const object*)argument;
     ui_service_priv_t* priv_data = service_get_priv_data(obj);
-    message_t message;
-    int32_t ret;
 
-    (void)memset(&message, 0, sizeof(message));
-    message.id = MSG_ID_SYS_HEARTBEAT;
-    message.param0 = ++priv_data->monitor_value;
-    ret = service_broadcast_message(&message);
-    if (ret)
-    {
-        ui_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
-                 msg_id_to_name(message.id),
-                 message.id,
-                 ret);
-    }
+    priv_data->monitor_value += 1;
+
+    (void)ui_service_heartbeat_send(priv_data->monitor_value);
 }
 #endif
 
@@ -170,8 +173,6 @@ static void ui_service_message_handler(const object*            obj,
                                        const message_t* const   message)
 {
     ui_service_priv_t* priv_data = service_get_priv_data(obj);
-    message_t send_message;
-    int32_t ret;
     osStatus_t stat;
 
     (void)stat;
@@ -203,60 +204,11 @@ static void ui_service_message_handler(const object*            obj,
         }
 #endif
 
-        (void)memset(&send_message, 0, sizeof(send_message));
-        send_message.id = MSG_ID_LED_SETUP;
-        send_message.param0 = LED_ID_1;
-        send_message.param1 = LED_TYPE_QUICK_FLASH;
-        ret = service_broadcast_message(&send_message);
-        if (ret)
-        {
-            pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
-                     msg_id_to_name(send_message.id),
-                     send_message.id,
-                     ret);
-        }
-        else
-        {
-            pr_info("Broadcast message %s(0x%x) succeed.",
-                    msg_id_to_name(send_message.id),
-                    send_message.id);
-        }
+        (void)led_service_setup_send(LED_ID_1, LED_TYPE_TURN_ON);
 
-        send_message.id = MSG_ID_LED_SETUP;
-        send_message.param0 = LED_ID_2;
-        send_message.param1 = LED_TYPE_SLOW_FLASH;
-        ret = service_broadcast_message(&send_message);
-        if (ret)
-        {
-            pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
-                     msg_id_to_name(send_message.id),
-                     send_message.id,
-                     ret);
-        }
-        else
-        {
-            pr_info("Broadcast message %s(0x%x) succeed.",
-                    msg_id_to_name(send_message.id),
-                    send_message.id);
-        }
+        (void)led_service_setup_send(LED_ID_2, LED_TYPE_QUICK_FLASH);
 
-        send_message.id = MSG_ID_LED_SETUP;
-        send_message.param0 = LED_ID_3;
-        send_message.param1 = LED_TYPE_QUICK_FLASH;
-        ret = service_broadcast_message(&send_message);
-        if (ret)
-        {
-            pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
-                     msg_id_to_name(send_message.id),
-                     send_message.id,
-                     ret);
-        }
-        else
-        {
-            pr_info("Broadcast message %s(0x%x) succeed.",
-                    msg_id_to_name(send_message.id),
-                    send_message.id);
-        }
+        (void)led_service_setup_send(LED_ID_3, LED_TYPE_SLOW_FLASH);
 
         break;
 
@@ -277,6 +229,17 @@ static void ui_service_message_handler(const object*            obj,
 #endif
         break;
     }
+}
+
+int32_t ui_service_startup_completed_send(void)
+{
+    message_t message;
+
+    (void)memset(&message, 0, sizeof(message));
+
+    message.id = MSG_ID_SYS_STARTUP_COMPLETED;
+
+    return service_broadcast_message(&message);
 }
 
 static ui_service_priv_t ui_service_priv;

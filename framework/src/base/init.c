@@ -19,6 +19,7 @@
 #include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
+#include "ui_service.h"
 
 /**
  * @brief   Startup hardware early.
@@ -72,7 +73,6 @@ const osThreadAttr_t init_attr = {
  */
 static void init_thread(void* argument)
 {
-    message_t message;
     osStatus_t stat;
     int32_t ret;
 
@@ -88,22 +88,7 @@ static void init_thread(void* argument)
 
     osDelay(500 * osKernelGetTickFreq() / 1000);
 
-    (void)memset(&message, 0, sizeof(message));
-    message.id = MSG_ID_SYS_STARTUP_COMPLETED;
-    ret = service_broadcast_message(&message);
-    if (ret)
-    {
-        pr_error("Broadcast message %s(0x%x) failed, ret 0x%x.",
-                 msg_id_to_name(message.id),
-                 message.id,
-                 ret);
-    }
-    else
-    {
-        pr_info("Broadcast message %s(0x%x) succeed.",
-                msg_id_to_name(message.id),
-                message.id);
-    }
+    (void)ui_service_startup_completed_send();
 
     stat = osThreadTerminate(osThreadGetId());
     if (stat != osOK)

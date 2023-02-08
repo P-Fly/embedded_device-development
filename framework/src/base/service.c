@@ -293,18 +293,6 @@ void* service_get_priv_data(const object* obj)
 }
 
 /**
- * @brief   Get the owner for service.
- *
- * @param   svc Pointer to the service handle.
- *
- * @retval  Returns the owner.
- */
-static const object* service_get_owner(const service_t* svc)
-{
-    return svc->owner;
-}
-
-/**
  * @brief   Broadcast event messages to all services.
  *
  * @param   message Message structure to send.
@@ -319,7 +307,6 @@ int32_t service_broadcast_message(const message_t* message)
     const service_t* start = module_service$$Base;
     const service_t* end = module_service$$Limit;
     const service_t* svc;
-    const object* obj;
     osStatus_t stat;
 
     if (!message)
@@ -327,16 +314,12 @@ int32_t service_broadcast_message(const message_t* message)
         return -EINVAL;
     }
 
+    taskENTER_CRITICAL();
+
     for (svc = start; svc < end; svc++)
     {
         if (svc)
         {
-            obj = service_get_owner(svc);
-            if (!obj)
-            {
-                return -EINVAL;
-            }
-
             stat = osMessageQueuePut(svc->queue_id,
                                      message,
                                      NULL,
@@ -344,10 +327,23 @@ int32_t service_broadcast_message(const message_t* message)
                                      1000);
             if (stat != osOK)
             {
+                pr_error("Broadcast message %s(0x%x) failed, stat 0x%x.",
+                    msg_id_to_name(message->id),
+                    message->id,
+                    stat);
+
+                taskEXIT_CRITICAL();
+
                 return -EPIPE;
             }
         }
     }
+
+    pr_info("Broadcast message %s(0x%x) succeed.",
+        msg_id_to_name(message->id),
+        message->id);
+
+    taskEXIT_CRITICAL();
 
     return 0;
 }
