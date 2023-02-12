@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\dbg_trace\inc;..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\framework\inc;..\..\..\framework\inc\base;..\..\..\framework\src\services\led_service;..\..\..\utils\inc;..\src\ui_service</IncludePath>
+              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\dbg_trace\inc;..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -378,16 +378,6 @@
         </TargetArmAds>
       </TargetOption>
       <Groups>
-        <Group>
-          <GroupName>application</GroupName>
-          <Files>
-            <File>
-              <FileName>hardware_if.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\hardware_if.c</FilePath>
-            </File>
-          </Files>
-        </Group>
         <Group>
           <GroupName>driver\startup</GroupName>
           <Files>
@@ -764,17 +754,17 @@
             <File>
               <FileName>init.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\base\init.c</FilePath>
+              <FilePath>..\..\..\framework\base\src\init.c</FilePath>
             </File>
             <File>
               <FileName>object.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\base\object.c</FilePath>
+              <FilePath>..\..\..\framework\base\src\object.c</FilePath>
             </File>
             <File>
               <FileName>service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\base\service.c</FilePath>
+              <FilePath>..\..\..\framework\base\src\service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -784,7 +774,7 @@
             <File>
               <FileName>led_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\services\led_service\led_service.c</FilePath>
+              <FilePath>..\..\..\framework\services\led_service\src\led_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -794,7 +784,7 @@
             <File>
               <FileName>button_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\services\button_service\button_service.c</FilePath>
+              <FilePath>..\..\..\framework\services\button_service\src\button_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -804,7 +794,7 @@
             <File>
               <FileName>display_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\services\display_service\display_service.c</FilePath>
+              <FilePath>..\..\..\framework\services\display_service\src\display_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -814,7 +804,7 @@
             <File>
               <FileName>data_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\services\data_service\data_service.c</FilePath>
+              <FilePath>..\..\..\framework\services\data_service\src\data_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -824,7 +814,7 @@
             <File>
               <FileName>ble_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\services\ble_service\ble_service.c</FilePath>
+              <FilePath>..\..\..\framework\services\ble_service\src\ble_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -834,7 +824,7 @@
             <File>
               <FileName>battery_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\framework\src\services\battery_service\battery_service.c</FilePath>
+              <FilePath>..\..\..\framework\services\battery_service\src\battery_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -844,7 +834,12 @@
             <File>
               <FileName>ui_service.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\src\ui_service\ui_service.c</FilePath>
+              <FilePath>..\application\ui_service\src\ui_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\application\hardware_if.c</FilePath>
             </File>
           </Files>
         </Group>
