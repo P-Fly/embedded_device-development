@@ -130,7 +130,7 @@ static int32_t service_deinit(const object* obj)
         stat = osThreadTerminate(svc->thread_id);
         if (stat != osOK)
         {
-            pr_error("Service <%s> terminate thread <%s> failed, stat 0x%x",
+            pr_error("Service <%s> terminate thread <%s> failed, stat %d",
                      obj->name,
                      osThreadGetName(svc->thread_id),
                      stat);
@@ -148,7 +148,7 @@ static int32_t service_deinit(const object* obj)
         stat = osMessageQueueDelete(svc->queue_id);
         if (stat != osOK)
         {
-            pr_error("Service <%s> delete message queue failed, stat 0x%x",
+            pr_error("Service <%s> delete message queue failed, stat %d",
                      obj->name,
                      stat);
         }
@@ -308,13 +308,22 @@ int32_t service_broadcast_message(const message_t* message)
     const service_t* end = module_service$$Limit;
     const service_t* svc;
     osStatus_t stat;
+    uint32_t saved_interrupt;
+    BaseType_t is_irq = xPortIsInsideInterrupt();
 
     if (!message)
     {
         return -EINVAL;
     }
 
-    taskENTER_CRITICAL();
+    if (is_irq)
+    {
+        saved_interrupt = portSET_INTERRUPT_MASK_FROM_ISR();
+    }
+    else
+    {
+        taskENTER_CRITICAL();
+    }
 
     for (svc = start; svc < end; svc++)
     {
@@ -327,23 +336,41 @@ int32_t service_broadcast_message(const message_t* message)
                                      1000);
             if (stat != osOK)
             {
-                pr_error("Broadcast message %s(0x%x) failed, stat 0x%x.",
+                pr_error("Broadcast message %s(0x%x) failed, stat %d.",
                     msg_id_to_name(message->id),
                     message->id,
                     stat);
 
-                taskEXIT_CRITICAL();
+                if (is_irq)
+                {
+                    portCLEAR_INTERRUPT_MASK_FROM_ISR(saved_interrupt);
+                }
+                else
+                {
+                    taskEXIT_CRITICAL();
+                }
 
                 return -EPIPE;
             }
         }
     }
 
-    pr_info("Broadcast message %s(0x%x) succeed.",
+    pr_info("Broadcast message %s(0x%x) succeed, 0x%x, 0x%x, 0x%x, 0x%x.",
         msg_id_to_name(message->id),
-        message->id);
+        message->id,
+        message->param0,
+        message->param1,
+        message->param2,
+        message->param3);
 
-    taskEXIT_CRITICAL();
+    if (is_irq)
+    {
+        portCLEAR_INTERRUPT_MASK_FROM_ISR(saved_interrupt);
+    }
+    else
+    {
+        taskEXIT_CRITICAL();
+    }
 
     return 0;
 }

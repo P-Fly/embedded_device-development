@@ -25,7 +25,7 @@
 #define ui_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define ui_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
 #define ui_info(str, ...)    pr_info(str, ## __VA_ARGS__)
-#define ui_debug(str, ...)   pr_debug(str, ## __VA_ARGS__)
+#define ui_debug(str, ...)   //pr_debug(str, ## __VA_ARGS__)
 
 /**
  * @brief   Private structure for ui service.
@@ -141,7 +141,7 @@ static int32_t ui_service_deinit(const object* obj)
     if (stat != osOK)
     {
         ui_error(
-            "Service <%s> delete timer <%s> failed, stat 0x%x",
+            "Service <%s> delete timer <%s> failed, stat %d",
             obj->name,
             ui_service_monitor_timer_attr.name,
             stat);
@@ -227,6 +227,10 @@ static void ui_service_message_handler(const object*            obj,
                 stat);
         }
 #endif
+        break;
+
+    case MSG_ID_BUTTON_STATE_NOTIFY:
+
         break;
     }
 }

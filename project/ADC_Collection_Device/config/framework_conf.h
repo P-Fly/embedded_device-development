@@ -33,13 +33,13 @@
 #define CONFIG_LED_SERVICE_QUEUE_NAME "led queue"
 #define CONFIG_LED_SERVICE_MSG_COUNT 10
 
-#define CONFIG_KEY_SERVICE_NAME "key service"
-#define CONFIG_KEY_SERVICE_LABEL key_service
-#define CONFIG_KEY_SERVICE_THREAD_NAME "key thread"
-#define CONFIG_KEY_SERVICE_THREAD_STACK_SIZE 2048
-#define CONFIG_KEY_SERVICE_THREAD_PRIORITY osPriorityNormal
-#define CONFIG_KEY_SERVICE_QUEUE_NAME "key queue"
-#define CONFIG_KEY_SERVICE_MSG_COUNT 10
+#define CONFIG_BUTTON_SERVICE_NAME "button service"
+#define CONFIG_BUTTON_SERVICE_LABEL button_service
+#define CONFIG_BUTTON_SERVICE_THREAD_NAME "button thread"
+#define CONFIG_BUTTON_SERVICE_THREAD_STACK_SIZE 2048
+#define CONFIG_BUTTON_SERVICE_THREAD_PRIORITY osPriorityNormal
+#define CONFIG_BUTTON_SERVICE_QUEUE_NAME "button queue"
+#define CONFIG_BUTTON_SERVICE_MSG_COUNT 10
 
 #define CONFIG_DISPLAY_SERVICE_NAME "display service"
 #define CONFIG_DISPLAY_SERVICE_LABEL display_service
@@ -87,6 +87,10 @@
 #define CONFIG_LED_MANAGER_NAME "led manager"
 #define CONFIG_LED_MANAGER_LABEL led_manager
 #define CONFIG_LED_MANAGER_TIMER_NAME "led manager timer"
+
+#define CONFIG_BUTTON_MANAGER_NAME "button manager"
+#define CONFIG_BUTTON_MANAGER_LABEL button_manager
+#define CONFIG_BUTTON_MANAGER_TIMER_NAME "button manager timer"
 
 #define CONFIG_DBG_TRACE_NAME "dbg"
 #define CONFIG_DBG_TRACE_LABEL dbg_trace_module

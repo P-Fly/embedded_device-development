@@ -34,7 +34,7 @@ typedef struct
 
 #define MSG_ID_SYS_SERVICE_BASE     0x00000000
 #define MSG_ID_LED_SERVICE_BASE     0x00000100
-#define MSG_ID_KEY_SERVICE_BASE     0x00000200
+#define MSG_ID_BUTTON_SERVICE_BASE  0x00000200
 #define MSG_ID_DISPLAY_SERVICE_BASE 0x00000300
 #define MSG_ID_DATA_SERVICE_BASE    0x00000400
 #define MSG_ID_BLE_SERVICE_BASE     0x00000500
@@ -73,28 +73,40 @@ typedef struct
  */
 #define MSG_ID_LED_SETUP (MSG_ID_LED_SERVICE_BASE | 0x0001)
 
+/**
+ * @brief           Notify button state.
+ *
+ * @message.id      MSG_ID_BUTTON_STATE
+ * @message.param0  button_id_e.
+ * @message.param1  button_state_e.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_BUTTON_STATE_NOTIFY (MSG_ID_BUTTON_SERVICE_BASE | 0x0001)
+
 typedef struct
 {
     uint32_t    id;
     const char* name;
-} msg_recorder_t;
+} msg_id_recorder_t;
 
-static const msg_recorder_t msg_recorder[] =
+static const msg_id_recorder_t msg_id_recorder[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED, "SYS_STARTUP_COMPLETED" },
-    { MSG_ID_SYS_HEARTBEAT,         "SYS_HEARTBEAT" },
-    { MSG_ID_LED_SETUP,             "LED_SETUP" },
+    { MSG_ID_SYS_HEARTBEAT,         "SYS_HEARTBEAT"         },
+    { MSG_ID_LED_SETUP,             "LED_SETUP"             },
+    { MSG_ID_BUTTON_STATE_NOTIFY,   "BUTTON_STATE_NOTIFY"   },
 };
 
 static inline const char* msg_id_to_name(uint32_t id)
 {
     uint32_t i;
 
-    for (i = 0; i < sizeof(msg_recorder) / sizeof(msg_recorder[0]); i++)
+    for (i = 0; i < sizeof(msg_id_recorder) / sizeof(msg_id_recorder[0]); i++)
     {
-        if (msg_recorder[i].id == id)
+        if (msg_id_recorder[i].id == id)
         {
-            return msg_recorder[i].name;
+            return msg_id_recorder[i].name;
         }
     }
 

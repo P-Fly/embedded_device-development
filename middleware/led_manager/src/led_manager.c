@@ -140,10 +140,10 @@ static int32_t led_manager_probe(const object* obj)
             osTimerOnce,
             (void*)i,
             &led_manager_timer_attr);
-        if (!handle->timer)
+        if (!handle->timer[i])
         {
             led_error(
-                "Manager <%s> create timer%d <%s> failed.",
+                "Manager <%s> create timer %d <%s> failed.",
                 obj->name,
                 i,
                 led_manager_timer_attr.name);
@@ -152,7 +152,7 @@ static int32_t led_manager_probe(const object* obj)
         else
         {
             led_info(
-                "Manager <%s> create timer%d <%s> succeed.",
+                "Manager <%s> create timer %d <%s> succeed.",
                 obj->name,
                 i,
                 led_manager_timer_attr.name);
@@ -183,7 +183,7 @@ static int32_t led_manager_shutdown(const object* obj)
         if (stat != osOK)
         {
             led_error(
-                "Manager <%s> delete timer%d <%s> failed, stat 0x%x",
+                "Manager <%s> delete timer%d <%s> failed, stat %d",
                 obj->name,
                 i,
                 led_manager_timer_attr.name,

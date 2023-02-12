@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __LED_SERVICE_H__
-#define __LED_SERVICE_H__
+#ifndef __BUTTON_SERVICE_H__
+#define __BUTTON_SERVICE_H__
 
-#include "led_manager.h"
+#include "button_manager.h"
 
-extern int32_t led_service_setup_send(led_id_e id, led_type_e type);
-
-#endif /* __LED_SERVICE_H__ */
+#endif /* __BUTTON_SERVICE_H__ */

@@ -16,11 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __LED_SERVICE_H__
-#define __LED_SERVICE_H__
+#ifndef __STM32WBXX_BUTTON_H__
+#define __STM32WBXX_BUTTON_H__
 
-#include "led_manager.h"
+#include <stddef.h>
+#include <stdint.h>
+#include "button_manager.h"
 
-extern int32_t led_service_setup_send(led_id_e id, led_type_e type);
+extern void stm32wbxx_button_init(void);
+extern void stm32wbxx_button_deinit(void);
+extern button_state_e stm32wbxx_button_get_state(button_id_e id);
 
-#endif /* __LED_SERVICE_H__ */
+#endif /* __STM32WBXX_BUTTON_H__ */

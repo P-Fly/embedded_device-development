@@ -57,6 +57,8 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
     char* buff = (char*)tx_buf;
     int32_t i;
     int32_t ret;
+    uint32_t saved_interrupt;
+    BaseType_t is_irq = xPortIsInsideInterrupt();
 
     if (!tx_buf)
     {
@@ -68,7 +70,14 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
         return -EINVAL;
     }
 
-    taskENTER_CRITICAL();
+    if (is_irq)
+    {
+        saved_interrupt = portSET_INTERRUPT_MASK_FROM_ISR();
+    }
+    else
+    {
+        taskENTER_CRITICAL();
+    }
 
     for (i = 0; i < tx_len; i++)
     {
@@ -79,7 +88,14 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
         }
     }
 
-    portEXIT_CRITICAL();
+    if (is_irq)
+    {
+        portCLEAR_INTERRUPT_MASK_FROM_ISR(saved_interrupt);
+    }
+    else
+    {
+        taskEXIT_CRITICAL();
+    }
 
     /* Enable the UART Transmit data register empty Interrupt */
     __HAL_UART_ENABLE_IT(&uart1_handle.uart, UART_IT_TXE);

@@ -24,7 +24,7 @@
 #define led_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define led_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
 #define led_info(str, ...)    pr_info(str, ## __VA_ARGS__)
-#define led_debug(str, ...)   pr_debug(str, ## __VA_ARGS__)
+#define led_debug(str, ...)   //pr_debug(str, ## __VA_ARGS__)
 
 /**
  * @brief   Private structure for led service.
@@ -103,17 +103,19 @@ static void led_service_message_handler(const object*           obj,
         ret = led_manager_setup(id, type);
         if (ret)
         {
-            pr_error("Service <%s> setup led %d, type %d failed, ret 0x%x.",
+            pr_error("Service <%s> setup led %d, type (%s)%d failed, ret %d.",
                      obj->name,
                      id,
+                     led_type_to_name(type),
                      type,
                      ret);
         }
         else
         {
-            pr_info("Service <%s> setup led %d, type %d succeed.",
+            pr_info("Service <%s> setup led %d, type (%s)%d succeed.",
                     obj->name,
                     id,
+                    led_type_to_name(type),
                     type);
         }
 
