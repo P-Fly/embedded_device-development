@@ -16,30 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "stm32wbxx.h"
+#ifndef __BATTERY_SERVICE_H__
+#define __BATTERY_SERVICE_H__
 
-/**
- * @brief   Function to malloc failed hook.
- */
-void vApplicationMallocFailedHook(void)
-{
-    while(1);
-}
+#include "adc_manager.h"
 
-/**
- * @brief   Function to stack overflow hook.
- */
-void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName)
+typedef enum
 {
-    while(1);
-}
+    BATTERY_STATE_LOW,
+    BATTERY_STATE_NORMAL,
 
-/**
- * @brief   Function to tick hook.
- */
-void vApplicationTickHook (void)
-{
-    HAL_IncTick();
-}
+    BATTERY_STATE_BUTT,
+} battery_state_e;
+
+#endif /* __BATTERY_SERVICE_H__ */

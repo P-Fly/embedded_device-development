@@ -125,6 +125,11 @@ static int32_t service_deinit(const object* obj)
     service_t* svc = (service_t*)obj->object_data;
     osStatus_t stat;
 
+    if (svc->deinit)
+    {
+        svc->deinit(obj);
+    }
+
     if (svc->thread_id)
     {
         stat = osThreadTerminate(svc->thread_id);
@@ -157,11 +162,6 @@ static int32_t service_deinit(const object* obj)
             pr_info("Service <%s> delete message queue succeed.",
                     obj->name);
         }
-    }
-
-    if (svc->deinit)
-    {
-        svc->deinit(obj);
     }
 
     return 0;
@@ -308,6 +308,7 @@ int32_t service_broadcast_message(const message_t* message)
     const service_t* end = module_service$$Limit;
     const service_t* svc;
     osStatus_t stat;
+    uint32_t timeout;
     uint32_t saved_interrupt;
     BaseType_t is_irq = xPortIsInsideInterrupt();
 
@@ -319,21 +320,19 @@ int32_t service_broadcast_message(const message_t* message)
     if (is_irq)
     {
         saved_interrupt = portSET_INTERRUPT_MASK_FROM_ISR();
+        timeout = 0;
     }
     else
     {
         taskENTER_CRITICAL();
+        timeout = CONFIG_MSG_SEND_BLOCK_TIMEOUT_MS * osKernelGetTickFreq() / 1000;
     }
 
     for (svc = start; svc < end; svc++)
     {
         if (svc)
         {
-            stat = osMessageQueuePut(svc->queue_id,
-                                     message,
-                                     NULL,
-                                     CONFIG_MSG_SEND_BLOCK_TIMEOUT_MS * osKernelGetTickFreq() /
-                                     1000);
+            stat = osMessageQueuePut(svc->queue_id, message, NULL, timeout);
             if (stat != osOK)
             {
                 pr_error("Broadcast message %s(0x%x) failed, stat %d.",

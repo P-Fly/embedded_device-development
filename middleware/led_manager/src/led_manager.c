@@ -42,7 +42,7 @@ typedef struct
 static led_manager_handle_t led_manager_handle;
 
 /**
- * @brief   Attributes structure for monitor timer.
+ * @brief   Attributes structure for led timer.
  */
 const osTimerAttr_t led_manager_timer_attr =
 {
@@ -62,6 +62,8 @@ const osTimerAttr_t led_manager_timer_attr =
  */
 int32_t led_manager_setup(led_id_e id, led_type_e type)
 {
+    osStatus_t stat;
+
     if (id >= LED_ID_BUTT)
     {
         return -EINVAL;
@@ -79,16 +81,24 @@ int32_t led_manager_setup(led_id_e id, led_type_e type)
     case LED_TYPE_QUICK_FLASH:
         led_on(id);
         led_manager_handle.interval_millisec[id] = 300;
-        osTimerStart(led_manager_handle.timer[id],
+        stat = osTimerStart(led_manager_handle.timer[id],
                      led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
                      1000);
+        if (stat != osOK)
+        {
+            pr_error("Led manager timer %d start failed, stat %d.", id, stat);
+        }
         break;
     case LED_TYPE_SLOW_FLASH:
         led_on(id);
         led_manager_handle.interval_millisec[id] = 1000;
-        osTimerStart(led_manager_handle.timer[id],
+        stat = osTimerStart(led_manager_handle.timer[id],
                      led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
                      1000);
+        if (stat != osOK)
+        {
+            pr_error("Led manager timer %d start failed, stat %d.", id, stat);
+        }
         break;
     case LED_TYPE_TURN_ON:
         led_on(id);
@@ -109,12 +119,17 @@ int32_t led_manager_setup(led_id_e id, led_type_e type)
 static void led_manager_timer_callback(void* argument)
 {
     int32_t id = (int32_t)argument;
+    osStatus_t stat;
 
     led_toggle((led_id_e)id);
 
-    osTimerStart(led_manager_handle.timer[id],
+    stat = osTimerStart(led_manager_handle.timer[id],
                  led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
                  1000);
+    if (stat != osOK)
+    {
+        pr_error("Led manager timer %d start failed, stat %d.", id, stat);
+    }
 }
 
 /**
@@ -183,7 +198,7 @@ static int32_t led_manager_shutdown(const object* obj)
         if (stat != osOK)
         {
             led_error(
-                "Manager <%s> delete timer%d <%s> failed, stat %d",
+                "Manager <%s> delete timer %d <%s> failed, stat %d",
                 obj->name,
                 i,
                 led_manager_timer_attr.name,
@@ -193,7 +208,7 @@ static int32_t led_manager_shutdown(const object* obj)
         else
         {
             led_info(
-                "Manager <%s> delete timer%d <%s> succeed.",
+                "Manager <%s> delete timer %d <%s> succeed.",
                 obj->name,
                 i,
                 led_manager_timer_attr.name);

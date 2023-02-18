@@ -16,30 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "stm32wbxx.h"
+#ifndef __ADC_MANAGER_H__
+#define __ADC_MANAGER_H__
 
-/**
- * @brief   Function to malloc failed hook.
- */
-void vApplicationMallocFailedHook(void)
+typedef enum
 {
-    while(1);
-}
+    ADC_ID_1 = 0,
+    ADC_ID_2,
+    ADC_ID_3,
 
-/**
- * @brief   Function to stack overflow hook.
- */
-void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName)
-{
-    while(1);
-}
+    ADC_ID_BUTT,
+} adc_id_e;
 
-/**
- * @brief   Function to tick hook.
- */
-void vApplicationTickHook (void)
-{
-    HAL_IncTick();
-}
+typedef void (* adc_user_clbk_t)(adc_id_e id, uint16_t data,
+                                 const void* user_ctx);
+
+extern int32_t adc_manager_register_user_clbk(adc_id_e          id,
+                                              adc_user_clbk_t   user_clbk,
+                                              const void*       user_ctx);
+extern void adc_manager_unregister_user_clbk(adc_id_e id);
+extern void adc_manager_driver_conv_cplt_clbk(adc_id_e id, uint16_t data);
+extern void adc_manager_driver_error_clbk(void);
+
+#endif /* __ADC_MANAGER_H__ */

@@ -30,10 +30,6 @@ extern object module_object_2$$Base[];
 extern object module_object_2$$Limit[];
 extern object module_object_3$$Base[];
 extern object module_object_3$$Limit[];
-extern object module_object_4$$Base[];
-extern object module_object_4$$Limit[];
-extern object module_object_5$$Base[];
-extern object module_object_5$$Limit[];
 
 /**
  * @brief   Define object levels.
@@ -48,10 +44,6 @@ static object* object_levels[] =
     module_object_2$$Limit,
     module_object_3$$Base,
     module_object_3$$Limit,
-    module_object_4$$Base,
-    module_object_4$$Limit,
-    module_object_5$$Base,
-    module_object_5$$Limit,
 };
 
 #define OBJECT_LEVELS_NUM (sizeof(object_levels) / sizeof(object_levels[0]))

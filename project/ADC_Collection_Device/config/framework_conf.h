@@ -92,6 +92,10 @@
 #define CONFIG_BUTTON_MANAGER_LABEL button_manager
 #define CONFIG_BUTTON_MANAGER_TIMER_NAME "button manager timer"
 
+#define CONFIG_ADC_MANAGER_NAME "adc manager"
+#define CONFIG_ADC_MANAGER_LABEL adc_manager
+#define CONFIG_ADC_MANAGER_TIMER_NAME "adc manager timer"
+
 #define CONFIG_DBG_TRACE_NAME "dbg"
 #define CONFIG_DBG_TRACE_LABEL dbg_trace_module
 #define CONFIG_DBG_TRACE_MAX_LEN 256

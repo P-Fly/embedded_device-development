@@ -106,4 +106,8 @@ static void hardware_clk_enable(void)
     __HAL_RCC_GPIOD_CLK_ENABLE();
     __HAL_RCC_GPIOE_CLK_ENABLE();
     __HAL_RCC_USART1_CLK_ENABLE();
+    __HAL_RCC_ADC_CLK_ENABLE();
+    __HAL_RCC_DMAMUX1_CLK_ENABLE();
+    __HAL_RCC_DMA1_CLK_ENABLE();
+    __HAL_RCC_DMA2_CLK_ENABLE();
 }

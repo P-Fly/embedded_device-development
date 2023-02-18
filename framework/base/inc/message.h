@@ -76,13 +76,24 @@ typedef struct
 /**
  * @brief           Notify button state.
  *
- * @message.id      MSG_ID_BUTTON_STATE
+ * @message.id      MSG_ID_BUTTON_STATE_NOTIFY
  * @message.param0  button_id_e.
  * @message.param1  button_state_e.
  * @message.param2  None.
  * @message.param3  None.
  */
 #define MSG_ID_BUTTON_STATE_NOTIFY (MSG_ID_BUTTON_SERVICE_BASE | 0x0001)
+
+/**
+ * @brief           Notify battery state.
+ *
+ * @message.id      MSG_ID_BATTERY_STATE_NOTIFY
+ * @message.param0  battery_state_e.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_BATTERY_STATE_NOTIFY (MSG_ID_BATTERY_SERVICE_BASE | 0x0001)
 
 typedef struct
 {
@@ -96,6 +107,7 @@ static const msg_id_recorder_t msg_id_recorder[] =
     { MSG_ID_SYS_HEARTBEAT,         "SYS_HEARTBEAT"         },
     { MSG_ID_LED_SETUP,             "LED_SETUP"             },
     { MSG_ID_BUTTON_STATE_NOTIFY,   "BUTTON_STATE_NOTIFY"   },
+    { MSG_ID_BATTERY_STATE_NOTIFY,  "BATTERY_STATE_NOTIFY"  },
 };
 
 static inline const char* msg_id_to_name(uint32_t id)

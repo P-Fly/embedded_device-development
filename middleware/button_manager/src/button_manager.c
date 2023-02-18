@@ -245,7 +245,7 @@ static int32_t button_manager_shutdown(const object* obj)
         if (ret != pdPASS)
         {
             button_error(
-                "Manager <%s> delete timer%d <%s> failed.",
+                "Manager <%s> delete timer %d <%s> failed.",
                 obj->name,
                 i,
                 CONFIG_BUTTON_MANAGER_TIMER_NAME);
@@ -254,7 +254,7 @@ static int32_t button_manager_shutdown(const object* obj)
         else
         {
             button_info(
-                "Manager <%s> delete timer%d <%s> succeed.",
+                "Manager <%s> delete timer %d <%s> succeed.",
                 obj->name,
                 i,
                 CONFIG_BUTTON_MANAGER_TIMER_NAME);

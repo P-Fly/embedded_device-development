@@ -86,7 +86,7 @@ static void init_thread(void* argument)
 
     hardware_later_startup();
 
-    osDelay(500 * osKernelGetTickFreq() / 1000);
+    (void)osDelay(500 * osKernelGetTickFreq() / 1000);
 
     (void)ui_service_startup_completed_send();
 

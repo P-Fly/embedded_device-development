@@ -16,30 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "stm32wbxx.h"
+#ifndef __ADC_MANAGER_WRAPPERS_H__
+#define __ADC_MANAGER_WRAPPERS_H__
 
-/**
- * @brief   Function to malloc failed hook.
- */
-void vApplicationMallocFailedHook(void)
+#include <stddef.h>
+#include <stdint.h>
+#include "stm32wbxx_adc.h"
+
+static inline int32_t adc_init(void)
 {
-    while(1);
+    return stm32wbxx_adc_init();
 }
 
-/**
- * @brief   Function to stack overflow hook.
- */
-void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName)
+static inline int32_t adc_deinit(void)
 {
-    while(1);
+    return stm32wbxx_adc_deinit();
 }
 
-/**
- * @brief   Function to tick hook.
- */
-void vApplicationTickHook (void)
+static inline int32_t adc_start(void)
 {
-    HAL_IncTick();
+    return stm32wbxx_adc_start();
 }
+
+#endif /* __ADC_MANAGER_WRAPPERS_H__ */
