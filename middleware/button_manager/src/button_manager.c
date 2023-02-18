@@ -83,7 +83,7 @@ static void button_manager_timer_callback(TimerHandle_t xTimer)
 
                 if (xTimerStart(button_manager_handle.timer[i], 0) != pdPASS)
                 {
-                    button_error("Button %d re-start failed.", id);
+                    button_error("Button %d restart failed.", id);
                 }
             }
             else if (state == BUTTON_STATE_UP)
@@ -191,6 +191,8 @@ static int32_t button_manager_probe(const object* obj)
 
     for (i = 0; i < BUTTON_ID_BUTT; i++)
     {
+        handle->press_down_count[i] = 0;
+
         handle->timer[i] = xTimerCreate(
             CONFIG_BUTTON_MANAGER_TIMER_NAME,
             pdMS_TO_TICKS(20),

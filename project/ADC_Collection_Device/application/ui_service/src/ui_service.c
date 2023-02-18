@@ -40,6 +40,8 @@ typedef struct
     int32_t     reserved;
 } ui_service_priv_t;
 
+static ui_service_priv_t ui_service_priv;
+
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
 /**
  * @brief   Attributes structure for monitor timer.
@@ -69,8 +71,7 @@ static int32_t ui_service_heartbeat_send(uint32_t count)
  */
 static void ui_service_monitor_timer_callback(void* argument)
 {
-    const object* obj = (const object*)argument;
-    ui_service_priv_t* priv_data = service_get_priv_data(obj);
+    ui_service_priv_t* priv_data = (ui_service_priv_t*)argument;
 
     priv_data->monitor_value += 1;
 
@@ -98,7 +99,7 @@ static int32_t ui_service_init(const object* obj)
     priv_data->monitor_timer = osTimerNew(
         ui_service_monitor_timer_callback,
         osTimerOnce,
-        (void*)obj,
+        (void*)priv_data,
         &ui_service_monitor_timer_attr);
     if (!priv_data->monitor_timer)
     {
@@ -203,13 +204,6 @@ static void ui_service_message_handler(const object*            obj,
                 stat);
         }
 #endif
-
-        (void)led_service_setup_send(LED_ID_1, LED_TYPE_TURN_ON);
-
-        (void)led_service_setup_send(LED_ID_2, LED_TYPE_QUICK_FLASH);
-
-        (void)led_service_setup_send(LED_ID_3, LED_TYPE_SLOW_FLASH);
-
         break;
 
     case MSG_ID_SYS_HEARTBEAT:
@@ -245,8 +239,6 @@ int32_t ui_service_startup_completed_send(void)
 
     return service_broadcast_message(&message);
 }
-
-static ui_service_priv_t ui_service_priv;
 
 static const service_config_t ui_service_config =
 {

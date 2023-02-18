@@ -46,10 +46,10 @@ typedef struct
 
 static const led_type_recorder_t led_type_recorder[] =
 {
-    { LED_TYPE_TURN_OFF,    "TURN_OFF"        },
-    { LED_TYPE_TURN_ON,     "TURN_ON"         },
-    { LED_TYPE_QUICK_FLASH, "QUICK_FLASH"     },
-    { LED_TYPE_SLOW_FLASH,  "SLOW_FLASH"      },
+    { LED_TYPE_TURN_OFF,    "TURN_OFF"    },
+    { LED_TYPE_TURN_ON,     "TURN_ON"     },
+    { LED_TYPE_QUICK_FLASH, "QUICK_FLASH" },
+    { LED_TYPE_SLOW_FLASH,  "SLOW_FLASH"  },
 };
 
 static inline const char* led_type_to_name(led_type_e type)

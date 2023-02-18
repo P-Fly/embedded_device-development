@@ -325,7 +325,8 @@ int32_t service_broadcast_message(const message_t* message)
     else
     {
         taskENTER_CRITICAL();
-        timeout = CONFIG_MSG_SEND_BLOCK_TIMEOUT_MS * osKernelGetTickFreq() / 1000;
+        timeout = CONFIG_MSG_SEND_BLOCK_TIMEOUT_MS * osKernelGetTickFreq() /
+                  1000;
     }
 
     for (svc = start; svc < end; svc++)
@@ -336,9 +337,9 @@ int32_t service_broadcast_message(const message_t* message)
             if (stat != osOK)
             {
                 pr_error("Broadcast message %s(0x%x) failed, stat %d.",
-                    msg_id_to_name(message->id),
-                    message->id,
-                    stat);
+                         msg_id_to_name(message->id),
+                         message->id,
+                         stat);
 
                 if (is_irq)
                 {
@@ -355,12 +356,12 @@ int32_t service_broadcast_message(const message_t* message)
     }
 
     pr_info("Broadcast message %s(0x%x) succeed, 0x%x, 0x%x, 0x%x, 0x%x.",
-        msg_id_to_name(message->id),
-        message->id,
-        message->param0,
-        message->param1,
-        message->param2,
-        message->param3);
+            msg_id_to_name(message->id),
+            message->id,
+            message->param0,
+            message->param1,
+            message->param2,
+            message->param3);
 
     if (is_irq)
     {

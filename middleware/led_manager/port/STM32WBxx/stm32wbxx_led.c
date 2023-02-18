@@ -50,7 +50,7 @@ typedef struct
     uint16_t        gpio_pin;
 } stm32wbxx_led_hw_config_t;
 
-static const stm32wbxx_led_hw_config_t led_hw_config[] =
+static const stm32wbxx_led_hw_config_t stm32wbxx_led_hw_config[] =
 {
     { LED_ID_1, CONFIG_LED1_PORT, CONFIG_LED1_PIN },
     { LED_ID_2, CONFIG_LED2_PORT, CONFIG_LED2_PIN },
@@ -67,17 +67,20 @@ void stm32wbxx_led_init(void)
     GPIO_InitTypeDef led;
     int32_t i;
 
-    for (i = 0; i < sizeof(led_hw_config) / sizeof(led_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_led_hw_config) / sizeof(stm32wbxx_led_hw_config[0]);
+         i++)
     {
-        led.Pin = led_hw_config[i].gpio_pin;
+        led.Pin = stm32wbxx_led_hw_config[i].gpio_pin;
         led.Mode = GPIO_MODE_OUTPUT_PP;
         led.Pull = GPIO_NOPULL;
         led.Speed = GPIO_SPEED_FREQ_HIGH;
 
-        HAL_GPIO_Init(led_hw_config[i].gpio_port, &led);
+        HAL_GPIO_Init(stm32wbxx_led_hw_config[i].gpio_port, &led);
 
-        HAL_GPIO_WritePin(led_hw_config[i].gpio_port,
-                          led_hw_config[i].gpio_pin,
+        HAL_GPIO_WritePin(stm32wbxx_led_hw_config[i].gpio_port,
+                          stm32wbxx_led_hw_config[i].gpio_pin,
                           GPIO_PIN_RESET);
     }
 }
@@ -91,12 +94,16 @@ void stm32wbxx_led_deinit(void)
 {
     int32_t i;
 
-    for (i = 0; i < sizeof(led_hw_config) / sizeof(led_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_led_hw_config) / sizeof(stm32wbxx_led_hw_config[0]);
+         i++)
     {
-        HAL_GPIO_WritePin(led_hw_config[i].gpio_port,
-                          led_hw_config[i].gpio_pin,
+        HAL_GPIO_WritePin(stm32wbxx_led_hw_config[i].gpio_port,
+                          stm32wbxx_led_hw_config[i].gpio_pin,
                           GPIO_PIN_RESET);
-        HAL_GPIO_DeInit(led_hw_config[i].gpio_port, led_hw_config[i].gpio_pin);
+        HAL_GPIO_DeInit(stm32wbxx_led_hw_config[i].gpio_port,
+                        stm32wbxx_led_hw_config[i].gpio_pin);
     }
 }
 
@@ -111,12 +118,15 @@ void stm32wbxx_led_on(led_id_e id)
 {
     int32_t i;
 
-    for (i = 0; i < sizeof(led_hw_config) / sizeof(led_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_led_hw_config) / sizeof(stm32wbxx_led_hw_config[0]);
+         i++)
     {
-        if (id == led_hw_config[i].id)
+        if (id == stm32wbxx_led_hw_config[i].id)
         {
-            HAL_GPIO_WritePin(led_hw_config[i].gpio_port,
-                              led_hw_config[i].gpio_pin,
+            HAL_GPIO_WritePin(stm32wbxx_led_hw_config[i].gpio_port,
+                              stm32wbxx_led_hw_config[i].gpio_pin,
                               GPIO_PIN_SET);
         }
     }
@@ -133,12 +143,15 @@ void stm32wbxx_led_off(led_id_e id)
 {
     int32_t i;
 
-    for (i = 0; i < sizeof(led_hw_config) / sizeof(led_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_led_hw_config) / sizeof(stm32wbxx_led_hw_config[0]);
+         i++)
     {
-        if (id == led_hw_config[i].id)
+        if (id == stm32wbxx_led_hw_config[i].id)
         {
-            HAL_GPIO_WritePin(led_hw_config[i].gpio_port,
-                              led_hw_config[i].gpio_pin,
+            HAL_GPIO_WritePin(stm32wbxx_led_hw_config[i].gpio_port,
+                              stm32wbxx_led_hw_config[i].gpio_pin,
                               GPIO_PIN_RESET);
         }
     }
@@ -155,12 +168,15 @@ void stm32wbxx_led_toggle(led_id_e id)
 {
     int32_t i;
 
-    for (i = 0; i < sizeof(led_hw_config) / sizeof(led_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_led_hw_config) / sizeof(stm32wbxx_led_hw_config[0]);
+         i++)
     {
-        if (id == led_hw_config[i].id)
+        if (id == stm32wbxx_led_hw_config[i].id)
         {
-            HAL_GPIO_TogglePin(led_hw_config[i].gpio_port,
-                               led_hw_config[i].gpio_pin);
+            HAL_GPIO_TogglePin(stm32wbxx_led_hw_config[i].gpio_port,
+                               stm32wbxx_led_hw_config[i].gpio_pin);
         }
     }
 }

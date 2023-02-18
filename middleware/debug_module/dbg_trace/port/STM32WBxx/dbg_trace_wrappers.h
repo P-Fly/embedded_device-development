@@ -28,6 +28,11 @@ static inline int32_t uart_init(void)
     return stm32wbxx_uart1_init();
 }
 
+static inline int32_t uart_deinit(void)
+{
+    return stm32wbxx_uart1_deinit();
+}
+
 static inline int32_t uart_write(const void* tx_buf, int32_t tx_len)
 {
     return stm32wbxx_uart1_write(tx_buf, tx_len);

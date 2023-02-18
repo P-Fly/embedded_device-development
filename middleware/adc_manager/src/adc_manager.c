@@ -202,6 +202,7 @@ static int32_t adc_manager_shutdown(const object* obj)
 {
     adc_manager_handle_t* handle = (adc_manager_handle_t*)obj->object_data;
     osStatus_t stat;
+    int32_t ret;
 
     stat = osTimerDelete(handle->timer);
     if (stat != osOK)
@@ -221,7 +222,11 @@ static int32_t adc_manager_shutdown(const object* obj)
             adc_manager_timer_attr.name);
     }
 
-    (void)adc_deinit();
+    ret = adc_deinit();
+    if (ret)
+    {
+        return -EIO;
+    }
 
     adc_info("Manager <%s> shutdown succeed.", obj->name);
 

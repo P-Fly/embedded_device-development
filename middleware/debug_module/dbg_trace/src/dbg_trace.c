@@ -92,7 +92,16 @@ static int32_t dbg_trace_probe(const object* obj)
  */
 static int32_t dbg_trace_shutdown(const object* obj)
 {
-    (void)obj;
+    dbg_trace_handle_t* handle = (dbg_trace_handle_t*)obj->object_data;
+    int32_t ret;
+
+    (void)handle;
+
+    ret = uart_deinit();
+    if (ret)
+    {
+        return -EIO;
+    }
 
     return 0;
 }

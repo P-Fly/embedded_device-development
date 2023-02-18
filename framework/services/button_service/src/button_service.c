@@ -20,7 +20,6 @@
 #include "cmsis_os.h"
 #include "framework.h"
 #include "button_service.h"
-#include "button_manager.h"
 
 #define button_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define button_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
@@ -39,6 +38,8 @@ typedef struct
     int32_t reserved;
 } button_service_priv_t;
 
+static button_service_priv_t button_service_priv;
+
 /**
  * @brief   Initialize the button service.
  *
@@ -53,7 +54,8 @@ static int32_t button_service_init(const object* obj)
 
     (void)memset(priv_data, 0, sizeof(button_service_priv_t));
 
-    ret = button_manager_register_user_clbk(button_service_user_clbk, obj);
+    ret = button_manager_register_user_clbk(button_service_user_clbk,
+                                            &button_service_priv);
     if (ret)
     {
         button_error("Service <%s> register user callback failed, ret %d.",
@@ -128,15 +130,13 @@ static void button_service_user_clbk(button_id_e    id,
 {
     (void)user_ctx;
 
-    button_info("Notify button %d event %s(%d).",
+    button_info("Notify button %d state %s(%d).",
                 id,
                 button_state_to_name(state),
                 state);
 
     (void)button_service_state_notify(id, state);
 }
-
-static button_service_priv_t button_service_priv;
 
 static const service_config_t button_service_config =
 {

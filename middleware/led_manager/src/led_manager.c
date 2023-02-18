@@ -74,7 +74,7 @@ int32_t led_manager_setup(led_id_e id, led_type_e type)
         return -EINVAL;
     }
 
-    osTimerStop(led_manager_handle.timer[id]);
+    (void)osTimerStop(led_manager_handle.timer[id]);
 
     switch (type)
     {
@@ -82,27 +82,30 @@ int32_t led_manager_setup(led_id_e id, led_type_e type)
         led_on(id);
         led_manager_handle.interval_millisec[id] = 300;
         stat = osTimerStart(led_manager_handle.timer[id],
-                     led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
-                     1000);
+                            led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
+                            1000);
         if (stat != osOK)
         {
             pr_error("Led manager timer %d start failed, stat %d.", id, stat);
         }
         break;
+
     case LED_TYPE_SLOW_FLASH:
         led_on(id);
         led_manager_handle.interval_millisec[id] = 1000;
         stat = osTimerStart(led_manager_handle.timer[id],
-                     led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
-                     1000);
+                            led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
+                            1000);
         if (stat != osOK)
         {
             pr_error("Led manager timer %d start failed, stat %d.", id, stat);
         }
         break;
+
     case LED_TYPE_TURN_ON:
         led_on(id);
         break;
+
     case LED_TYPE_TURN_OFF:
         led_off(id);
         break;
@@ -124,11 +127,11 @@ static void led_manager_timer_callback(void* argument)
     led_toggle((led_id_e)id);
 
     stat = osTimerStart(led_manager_handle.timer[id],
-                 led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
-                 1000);
+                        led_manager_handle.interval_millisec[id] * osKernelGetTickFreq() /
+                        1000);
     if (stat != osOK)
     {
-        pr_error("Led manager timer %d start failed, stat %d.", id, stat);
+        pr_error("Led manager timer %d restart failed, stat %d.", id, stat);
     }
 }
 

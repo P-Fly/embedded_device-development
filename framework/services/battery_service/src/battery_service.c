@@ -21,16 +21,18 @@
 #include "framework.h"
 #include "battery_service.h"
 
-#define battery_error(str, ...)   pr_error(str, ##__VA_ARGS__)
-#define battery_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
-#define battery_info(str, ...)    pr_info(str, ##__VA_ARGS__)
+#define battery_error(str, ...)   pr_error(str, ## __VA_ARGS__)
+#define battery_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
+#define battery_info(str, ...)    pr_info(str, ## __VA_ARGS__)
 #define battery_debug(str, ...)   //pr_debug(str, ##__VA_ARGS__)
 
-#define BATTERY_SERVICE_VOLT_LEVEL_1 2000
-#define BATTERY_SERVICE_VOLT_LEVEL_2 1800
-#define BATTERY_SERVICE_VOLT_LEVEL_3 1600
+#define BATTERY_SERVICE_VOLT_LEVEL_1 3100
+#define BATTERY_SERVICE_VOLT_LEVEL_2 3000
+#define BATTERY_SERVICE_VOLT_LEVEL_3 2900
 
-static void battery_service_user_clbk(adc_id_e id, uint16_t data, const void* user_ctx);
+static void battery_service_user_clbk(adc_id_e      id,
+                                      uint16_t      data,
+                                      const void*   user_ctx);
 
 /**
  * @brief   Private structure for battery service.
@@ -39,7 +41,7 @@ typedef struct
 {
     battery_state_e state;
 
-    uint32_t cnt;
+    uint32_t        cnt;
 } battery_service_priv_t;
 
 static battery_service_priv_t battery_service_priv;
@@ -59,13 +61,16 @@ static int32_t battery_service_init(const object* obj)
     (void)memset(priv_data, 0, sizeof(battery_service_priv_t));
 
     priv_data->state = BATTERY_STATE_BUTT;
+    priv_data->cnt = 0;
 
-    ret = adc_manager_register_user_clbk(ADC_ID_1, battery_service_user_clbk, &battery_service_priv);
+    ret = adc_manager_register_user_clbk(ADC_ID_1,
+                                         battery_service_user_clbk,
+                                         &battery_service_priv);
     if (ret)
     {
         battery_error("Service <%s> register user callback failed, ret %d.",
-                     obj->name,
-                     ret);
+                      obj->name,
+                      ret);
 
         return ret;
     }
@@ -107,13 +112,13 @@ static void battery_service_message_handler(const object*           obj,
     battery_service_priv_t* priv_data = service_get_priv_data(obj);
 
     battery_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
-            obj->name,
-            msg_id_to_name(message->id),
-            message->id,
-            message->param0,
-            message->param1,
-            message->param2,
-            message->param3);
+                  obj->name,
+                  msg_id_to_name(message->id),
+                  message->id,
+                  message->param0,
+                  message->param1,
+                  message->param2,
+                  message->param3);
 }
 
 int32_t battery_service_state_notify(battery_state_e state)
@@ -128,48 +133,57 @@ int32_t battery_service_state_notify(battery_state_e state)
     return service_broadcast_message(&message);
 }
 
-static void battery_service_user_clbk(adc_id_e id, uint16_t data, const void* user_ctx)
+static void battery_service_user_clbk(adc_id_e      id,
+                                      uint16_t      data,
+                                      const void*   user_ctx)
 {
     battery_service_priv_t* priv_data = (battery_service_priv_t*)user_ctx;
+    battery_state_e state = BATTERY_STATE_BUTT;
+    uint32_t voltage = data;
 
     if (priv_data->cnt == 0)
     {
         if (priv_data->state == BATTERY_STATE_LOW)
         {
-            if (data >= BATTERY_SERVICE_VOLT_LEVEL_1)
+            if (voltage >= BATTERY_SERVICE_VOLT_LEVEL_1)
             {
-                priv_data->state = BATTERY_STATE_NORMAL;
-
-                (void)battery_service_state_notify(BATTERY_STATE_NORMAL);
+                state = BATTERY_STATE_NORMAL;
             }
         }
         else if (priv_data->state == BATTERY_STATE_NORMAL)
         {
-            if (data < BATTERY_SERVICE_VOLT_LEVEL_3)
+            if (voltage < BATTERY_SERVICE_VOLT_LEVEL_3)
             {
-                priv_data->state = BATTERY_STATE_LOW;
-
-                (void)battery_service_state_notify(BATTERY_STATE_LOW);
+                state = BATTERY_STATE_LOW;
             }
         }
         else
         {
-            if (data >= BATTERY_SERVICE_VOLT_LEVEL_2)
+            if (voltage >= BATTERY_SERVICE_VOLT_LEVEL_2)
             {
-                priv_data->state = BATTERY_STATE_NORMAL;
-
-                (void)battery_service_state_notify(BATTERY_STATE_NORMAL);
+                state = BATTERY_STATE_NORMAL;
             }
             else
             {
-                priv_data->state = BATTERY_STATE_LOW;
-
-                (void)battery_service_state_notify(BATTERY_STATE_LOW);
+                state = BATTERY_STATE_LOW;
             }
+        }
+
+        if (state != BATTERY_STATE_BUTT)
+        {
+            battery_info("Notify battery state %s(%d), current voltage %d.",
+                         battery_state_to_name(state),
+                         state,
+                         voltage);
+
+            priv_data->state = state;
+
+            (void)battery_service_state_notify(state);
         }
     }
 
     priv_data->cnt++;
+
     priv_data->cnt = priv_data->cnt % 500;
 }
 

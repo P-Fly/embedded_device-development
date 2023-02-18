@@ -54,7 +54,7 @@ typedef struct
     IRQn_Type       irq_type;
 } stm32wbxx_button_hw_config_t;
 
-static const stm32wbxx_button_hw_config_t button_hw_config[] =
+static const stm32wbxx_button_hw_config_t stm32wbxx_button_hw_config[] =
 {
     { BUTTON_ID_1, CONFIG_BUTTON1_PORT, CONFIG_BUTTON1_PIN,
       CONFIG_BUTTON1_EXTI_IRQn },
@@ -74,15 +74,20 @@ void stm32wbxx_button_init(void)
     GPIO_InitTypeDef button;
     int32_t i;
 
-    for (i = 0; i < sizeof(button_hw_config) / sizeof(button_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_button_hw_config) /
+         sizeof(stm32wbxx_button_hw_config[0]);
+         i++)
     {
-        button.Pin = button_hw_config[i].gpio_pin;
+        button.Pin = stm32wbxx_button_hw_config[i].gpio_pin;
         button.Pull = GPIO_PULLUP;
         button.Mode = GPIO_MODE_IT_FALLING;
-        HAL_GPIO_Init(button_hw_config[i].gpio_port, &button);
+        HAL_GPIO_Init(stm32wbxx_button_hw_config[i].gpio_port, &button);
 
-        HAL_NVIC_SetPriority(button_hw_config[i].irq_type, 0x0F, 0x00);
-        HAL_NVIC_EnableIRQ(button_hw_config[i].irq_type);
+        HAL_NVIC_SetPriority(stm32wbxx_button_hw_config[i].irq_type, 0x0F,
+                             0x00);
+        HAL_NVIC_EnableIRQ(stm32wbxx_button_hw_config[i].irq_type);
     }
 }
 
@@ -95,11 +100,15 @@ void stm32wbxx_button_deinit(void)
 {
     int32_t i;
 
-    for (i = 0; i < sizeof(button_hw_config) / sizeof(button_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_button_hw_config) /
+         sizeof(stm32wbxx_button_hw_config[0]);
+         i++)
     {
-        HAL_NVIC_DisableIRQ(button_hw_config[i].irq_type);
-        HAL_GPIO_DeInit(button_hw_config[i].gpio_port,
-                        button_hw_config[i].gpio_pin);
+        HAL_NVIC_DisableIRQ(stm32wbxx_button_hw_config[i].irq_type);
+        HAL_GPIO_DeInit(stm32wbxx_button_hw_config[i].gpio_port,
+                        stm32wbxx_button_hw_config[i].gpio_pin);
     }
 }
 
@@ -115,12 +124,16 @@ button_state_e stm32wbxx_button_get_state(button_id_e id)
     GPIO_PinState state;
     int32_t i;
 
-    for (i = 0; i < sizeof(button_hw_config) / sizeof(button_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_button_hw_config) /
+         sizeof(stm32wbxx_button_hw_config[0]);
+         i++)
     {
-        if (button_hw_config[i].id == id)
+        if (stm32wbxx_button_hw_config[i].id == id)
         {
-            state = HAL_GPIO_ReadPin(button_hw_config[i].gpio_port,
-                                     button_hw_config[i].gpio_pin);
+            state = HAL_GPIO_ReadPin(stm32wbxx_button_hw_config[i].gpio_port,
+                                     stm32wbxx_button_hw_config[i].gpio_pin);
 
             if (GPIO_PIN_RESET == state)
             {
@@ -140,26 +153,30 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     int32_t i;
 
-    for (i = 0; i < sizeof(button_hw_config) / sizeof(button_hw_config[0]); i++)
+    for (i = 0;
+         i <
+         sizeof(stm32wbxx_button_hw_config) /
+         sizeof(stm32wbxx_button_hw_config[0]);
+         i++)
     {
-        if (GPIO_Pin == button_hw_config[i].gpio_pin)
+        if (GPIO_Pin == stm32wbxx_button_hw_config[i].gpio_pin)
         {
-            button_manager_driver_clbk(button_hw_config[i].id);
+            button_manager_driver_clbk(stm32wbxx_button_hw_config[i].id);
         }
     }
 }
 
 void EXTI4_IRQHandler(void)
 {
-    HAL_GPIO_EXTI_IRQHandler(button_hw_config[0].gpio_pin);
+    HAL_GPIO_EXTI_IRQHandler(stm32wbxx_button_hw_config[0].gpio_pin);
 }
 
 void EXTI0_IRQHandler(void)
 {
-    HAL_GPIO_EXTI_IRQHandler(button_hw_config[1].gpio_pin);
+    HAL_GPIO_EXTI_IRQHandler(stm32wbxx_button_hw_config[1].gpio_pin);
 }
 
 void EXTI1_IRQHandler(void)
 {
-    HAL_GPIO_EXTI_IRQHandler(button_hw_config[2].gpio_pin);
+    HAL_GPIO_EXTI_IRQHandler(stm32wbxx_button_hw_config[2].gpio_pin);
 }

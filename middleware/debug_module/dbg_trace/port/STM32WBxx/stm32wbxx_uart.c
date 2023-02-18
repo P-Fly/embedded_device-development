@@ -41,7 +41,7 @@ typedef struct
     char                rx_ring_buff[CONFIG_UART1_RX_RING_BUFF_SIZE];
 } stm32wbxx_uart_handle_t;
 
-static stm32wbxx_uart_handle_t uart1_handle;
+static stm32wbxx_uart_handle_t stm32wbxx_uart_handle;
 
 /**
  * @brief   Write data to uart.
@@ -81,7 +81,7 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
 
     for (i = 0; i < tx_len; i++)
     {
-        ret = ring_buffer_write(&uart1_handle.tx, buff[i]);
+        ret = ring_buffer_write(&stm32wbxx_uart_handle.tx, buff[i]);
         if (ret)
         {
             break;
@@ -98,7 +98,7 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
     }
 
     /* Enable the UART Transmit data register empty Interrupt */
-    __HAL_UART_ENABLE_IT(&uart1_handle.uart, UART_IT_TXE);
+    __HAL_UART_ENABLE_IT(&stm32wbxx_uart_handle.uart, UART_IT_TXE);
 
     return i;
 }
@@ -130,7 +130,7 @@ int32_t stm32wbxx_uart1_read(void* rx_buf, int32_t rx_len)
 
     for (i = 0; i < rx_len; i++)
     {
-        ret = ring_buffer_read(&uart1_handle.rx, &buff[i]);
+        ret = ring_buffer_read(&stm32wbxx_uart_handle.rx, &buff[i]);
         if (ret)
         {
             break;
@@ -190,7 +190,7 @@ static void stm32wbxx_uart1_irq_handler(stm32wbxx_uart_handle_t* handle)
  */
 void USART1_IRQHandler(void)
 {
-    stm32wbxx_uart1_irq_handler(&uart1_handle);
+    stm32wbxx_uart1_irq_handler(&stm32wbxx_uart_handle);
 }
 
 /**
@@ -244,66 +244,72 @@ int32_t stm32wbxx_uart1_init(void)
 {
     int32_t ret;
 
-    (void)memset(&uart1_handle, 0, sizeof(stm32wbxx_uart_handle_t));
+    (void)memset(&stm32wbxx_uart_handle, 0, sizeof(stm32wbxx_uart_handle_t));
 
-    uart1_handle.uart.Instance = USART1;
-    uart1_handle.uart.Init.BaudRate = CONFIG_UART1_HW_BAUDRATE;
-    uart1_handle.uart.Init.WordLength = UART_WORDLENGTH_8B;
-    uart1_handle.uart.Init.StopBits = UART_STOPBITS_1;
-    uart1_handle.uart.Init.Parity = UART_PARITY_NONE;
-    uart1_handle.uart.Init.Mode = UART_MODE_TX_RX;
-    uart1_handle.uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    uart1_handle.uart.Init.OverSampling = UART_OVERSAMPLING_16;
-    uart1_handle.uart.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    uart1_handle.uart.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-    uart1_handle.uart.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    stm32wbxx_uart_handle.uart.Instance = USART1;
+    stm32wbxx_uart_handle.uart.Init.BaudRate = CONFIG_UART1_HW_BAUDRATE;
+    stm32wbxx_uart_handle.uart.Init.WordLength = UART_WORDLENGTH_8B;
+    stm32wbxx_uart_handle.uart.Init.StopBits = UART_STOPBITS_1;
+    stm32wbxx_uart_handle.uart.Init.Parity = UART_PARITY_NONE;
+    stm32wbxx_uart_handle.uart.Init.Mode = UART_MODE_TX_RX;
+    stm32wbxx_uart_handle.uart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    stm32wbxx_uart_handle.uart.Init.OverSampling = UART_OVERSAMPLING_16;
+    stm32wbxx_uart_handle.uart.Init.OneBitSampling =
+        UART_ONE_BIT_SAMPLE_DISABLE;
+    stm32wbxx_uart_handle.uart.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+    stm32wbxx_uart_handle.uart.AdvancedInit.AdvFeatureInit =
+        UART_ADVFEATURE_NO_INIT;
 
-    if (HAL_UART_RegisterCallback(&uart1_handle.uart, HAL_UART_MSPINIT_CB_ID,
+    if (HAL_UART_RegisterCallback(&stm32wbxx_uart_handle.uart,
+                                  HAL_UART_MSPINIT_CB_ID,
                                   stm32wbxx_uart1_msp_init) != HAL_OK)
     {
         return -EIO;
     }
 
-    if (HAL_UART_RegisterCallback(&uart1_handle.uart, HAL_UART_MSPDEINIT_CB_ID,
+    if (HAL_UART_RegisterCallback(&stm32wbxx_uart_handle.uart,
+                                  HAL_UART_MSPDEINIT_CB_ID,
                                   stm32wbxx_uart1_msp_deinit) != HAL_OK)
     {
         return -EIO;
     }
 
     ret =
-        ring_buffer_init(&uart1_handle.tx, uart1_handle.tx_ring_buff,
-                         sizeof(uart1_handle.tx_ring_buff));
+        ring_buffer_init(&stm32wbxx_uart_handle.tx,
+                         stm32wbxx_uart_handle.tx_ring_buff,
+                         sizeof(stm32wbxx_uart_handle.tx_ring_buff));
     if (ret)
     {
         return ret;
     }
 
     ret =
-        ring_buffer_init(&uart1_handle.rx, uart1_handle.rx_ring_buff,
-                         sizeof(uart1_handle.rx_ring_buff));
+        ring_buffer_init(&stm32wbxx_uart_handle.rx,
+                         stm32wbxx_uart_handle.rx_ring_buff,
+                         sizeof(stm32wbxx_uart_handle.rx_ring_buff));
     if (ret)
     {
         return ret;
     }
 
-    if (HAL_UART_Init(&uart1_handle.uart) != HAL_OK)
+    if (HAL_UART_Init(&stm32wbxx_uart_handle.uart) != HAL_OK)
     {
         return -EIO;
     }
 
-    if (HAL_UARTEx_SetTxFifoThreshold(&uart1_handle.uart,
+    if (HAL_UARTEx_SetTxFifoThreshold(&stm32wbxx_uart_handle.uart,
                                       UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
     {
         return -EIO;
     }
 
-    if (HAL_UARTEx_SetRxFifoThreshold(&uart1_handle.uart,
+    if (HAL_UARTEx_SetRxFifoThreshold(&stm32wbxx_uart_handle.uart,
                                       UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
     {
         return -EIO;
     }
 
-    if (HAL_UARTEx_EnableFifoMode(&uart1_handle.uart) != HAL_OK)
+    if (HAL_UARTEx_EnableFifoMode(&stm32wbxx_uart_handle.uart) != HAL_OK)
     {
         return -EIO;
     }
@@ -318,7 +324,7 @@ int32_t stm32wbxx_uart1_init(void)
  */
 int32_t stm32wbxx_uart1_deinit(void)
 {
-    if (HAL_UART_DeInit(&uart1_handle.uart) != HAL_OK)
+    if (HAL_UART_DeInit(&stm32wbxx_uart_handle.uart) != HAL_OK)
     {
         return -EIO;
     }
