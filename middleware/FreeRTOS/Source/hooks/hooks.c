@@ -16,30 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stm32wbxx.h"
+#include "framework.h"
 
 /**
  * @brief   Function to malloc failed hook.
  */
 void vApplicationMallocFailedHook(void)
 {
-    while(1);
+    char* name = pcTaskGetName(xTaskGetCurrentTaskHandle());
+
+    pr_error("Malloc failed at task <%s>.", name);
+
+    assert(0);
 }
 
 /**
  * @brief   Function to stack overflow hook.
  */
-void vApplicationStackOverflowHook (TaskHandle_t xTask, signed char *pcTaskName)
+void vApplicationStackOverflowHook(TaskHandle_t xTask, signed char* pcTaskName)
 {
-    while(1);
+    pr_error("Stack overflow at task <%s>.", pcTaskName);
+    pr_error("Water mark: %d.", uxTaskGetStackHighWaterMark(xTask));
+    pr_error("Free heap size: %d.", xPortGetFreeHeapSize( ));
+
+    assert(0);
 }
 
 /**
  * @brief   Function to tick hook.
  */
-void vApplicationTickHook (void)
+void vApplicationTickHook(void)
 {
     HAL_IncTick();
 }

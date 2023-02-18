@@ -85,7 +85,6 @@ static void abort(void)
  *      __ASSERT_MSG is defined.
  *      _AEABI_PORTABILITY_LEVEL is defined and not 0.
  */
-__attribute__((noreturn))
 void __aeabi_assert(const char* expr, const char* file, int line)
 {
     char str[12], * p;
