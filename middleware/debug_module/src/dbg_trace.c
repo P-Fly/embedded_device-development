@@ -21,7 +21,7 @@
 #include <string.h>
 #include "framework.h"
 #include "dbg_trace.h"
-#include "dbg_trace_wrappers.h"
+#include "dbg_module_wrappers.h"
 
 /**
  * @brief   Dbg trace handle definition.

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __DBG_TRACE_WRAPPERS_H__
-#define __DBG_TRACE_WRAPPERS_H__
+#ifndef __DBG_MODULE_WRAPPERS_H__
+#define __DBG_MODULE_WRAPPERS_H__
 
 #include <stddef.h>
 #include <stdint.h>
@@ -38,4 +38,4 @@ static inline int32_t uart_write(const void* tx_buf, int32_t tx_len)
     return stm32wbxx_uart1_write(tx_buf, tx_len);
 }
 
-#endif /* __DBG_TRACE_WRAPPERS_H__ */
+#endif /* __DBG_MODULE_WRAPPERS_H__ */

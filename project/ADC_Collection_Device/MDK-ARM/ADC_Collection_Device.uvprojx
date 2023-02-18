@@ -335,9 +335,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4</Define>
+              <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4,__ASSERT_MSG</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\dbg_trace\inc;..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\middleware\adc_manager\inc;..\..\..\middleware\adc_manager\port\STM32WBxx;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\inc;..\..\..\middleware\debug_module\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\middleware\adc_manager\inc;..\..\..\middleware\adc_manager\port\STM32WBxx;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -704,17 +704,22 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>middleware\debug_module\dbg_trace</GroupName>
+          <GroupName>middleware\debug_module</GroupName>
           <Files>
             <File>
               <FileName>dbg_trace.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\middleware\debug_module\dbg_trace\src\dbg_trace.c</FilePath>
+              <FilePath>..\..\..\middleware\debug_module\src\dbg_trace.c</FilePath>
+            </File>
+            <File>
+              <FileName>dbg_assert.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\debug_module\src\dbg_assert.c</FilePath>
             </File>
             <File>
               <FileName>stm32wbxx_uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\middleware\debug_module\dbg_trace\port\STM32WBxx\stm32wbxx_uart.c</FilePath>
+              <FilePath>..\..\..\middleware\debug_module\port\STM32WBxx\stm32wbxx_uart.c</FilePath>
             </File>
           </Files>
         </Group>
