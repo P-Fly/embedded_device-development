@@ -276,6 +276,9 @@ int32_t stm32wbxx_adc_init(void)
 
     channel.Channel = ADC_CHANNEL_TEMPSENSOR;
     channel.Rank = ADC_REGULAR_RANK_3;
+    channel.SingleDiff = ADC_SINGLE_ENDED;
+    channel.OffsetNumber = ADC_OFFSET_NONE;
+    channel.Offset = 0;
 
     if (HAL_ADC_ConfigChannel(&stm32wbxx_adc_handle.adc, &channel) != HAL_OK)
     {
