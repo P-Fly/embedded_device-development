@@ -103,7 +103,7 @@ static void led_service_message_handler(const object*           obj,
         ret = led_manager_setup(id, type);
         if (ret)
         {
-            pr_error("Service <%s> setup led %d, type (%s)%d failed, ret %d.",
+            pr_error("Service <%s> setup led %d, type %s(%d) failed, ret %d.",
                      obj->name,
                      id,
                      led_type_to_name(type),
@@ -112,7 +112,7 @@ static void led_service_message_handler(const object*           obj,
         }
         else
         {
-            pr_info("Service <%s> setup led %d, type (%s)%d succeed.",
+            pr_info("Service <%s> setup led %d, type %s(%d) succeed.",
                     obj->name,
                     id,
                     led_type_to_name(type),

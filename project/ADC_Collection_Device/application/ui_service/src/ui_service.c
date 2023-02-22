@@ -17,15 +17,21 @@
  */
 
 #include <string.h>
+#include <assert.h>
+
 #include "cmsis_os.h"
 #include "framework.h"
 #include "ui_service.h"
 #include "led_service.h"
+#include "button_service.h"
+#include "battery_service.h"
 
 #define ui_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define ui_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
 #define ui_info(str, ...)    pr_info(str, ## __VA_ARGS__)
 #define ui_debug(str, ...)   //pr_debug(str, ## __VA_ARGS__)
+
+static int32_t ui_service_system_sm_changed(system_sm_e new);
 
 /**
  * @brief   Private structure for ui service.
@@ -37,7 +43,8 @@ typedef struct
     uint32_t    monitor_interval_millisec;
     uint32_t    monitor_value;
 #endif
-    int32_t     reserved;
+
+    system_sm_e system_state;
 } ui_service_priv_t;
 
 static ui_service_priv_t ui_service_priv;
@@ -91,6 +98,8 @@ static int32_t ui_service_init(const object* obj)
     ui_service_priv_t* priv_data = service_get_priv_data(obj);
 
     (void)memset(priv_data, 0, sizeof(ui_service_priv_t));
+
+    priv_data->system_state = SYSTEM_SM_INITIALIZE;
 
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
     priv_data->monitor_interval_millisec =
@@ -174,9 +183,6 @@ static void ui_service_message_handler(const object*            obj,
                                        const message_t* const   message)
 {
     ui_service_priv_t* priv_data = service_get_priv_data(obj);
-    osStatus_t stat;
-
-    (void)stat;
 
     ui_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
              obj->name,
@@ -190,8 +196,10 @@ static void ui_service_message_handler(const object*            obj,
     switch (message->id)
     {
     case MSG_ID_SYS_STARTUP_COMPLETED:
-
+    {
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
+        osStatus_t stat;
+
         stat = osTimerStart(priv_data->monitor_timer,
                             priv_data->monitor_interval_millisec * osKernelGetTickFreq() /
                             1000);
@@ -204,11 +212,14 @@ static void ui_service_message_handler(const object*            obj,
                 stat);
         }
 #endif
-        break;
+    }
+    break;
 
     case MSG_ID_SYS_HEARTBEAT:
-
+    {
 #if CONFIG_UI_SERVICE_MONITOR_TIMER_ENABLE == 1
+        osStatus_t stat;
+
         stat = osTimerStart(priv_data->monitor_timer,
                             priv_data->monitor_interval_millisec * osKernelGetTickFreq() /
                             1000);
@@ -221,11 +232,62 @@ static void ui_service_message_handler(const object*            obj,
                 stat);
         }
 #endif
-        break;
+    }
+    break;
 
     case MSG_ID_BUTTON_STATE_NOTIFY:
+    {
+        button_id_e button_id = (button_id_e)message->param0;
+        button_state_e button_state = (button_state_e)message->param1;
 
-        break;
+        if (priv_data->system_state == SYSTEM_SM_IDLE)
+        {
+            if (button_id == BUTTON_ID_1 && button_state == BUTTON_STATE_CLICK)
+            {
+                ui_service_system_sm_changed(SYSTEM_SM_PREPARE);
+            }
+        }
+        else if (priv_data->system_state == SYSTEM_SM_PREPARE)
+        {
+            if (button_id == BUTTON_ID_1 && button_state == BUTTON_STATE_CLICK)
+            {
+                ui_service_system_sm_changed(SYSTEM_SM_IDLE);
+            }
+
+            if (button_id == BUTTON_ID_2 && button_state == BUTTON_STATE_CLICK)
+            {
+                ui_service_system_sm_changed(SYSTEM_SM_RUNNING);
+            }
+        }
+        else if (priv_data->system_state == SYSTEM_SM_RUNNING)
+        {
+            if (button_id == BUTTON_ID_1 && button_state == BUTTON_STATE_CLICK)
+            {
+                ui_service_system_sm_changed(SYSTEM_SM_IDLE);
+            }
+
+            if (button_id == BUTTON_ID_2 && button_state == BUTTON_STATE_CLICK)
+            {
+                ui_service_system_sm_changed(SYSTEM_SM_PREPARE);
+            }
+        }
+    }
+    break;
+
+    case MSG_ID_BATTERY_STATE_NOTIFY:
+    {
+        battery_state_e battery_state = (battery_state_e)message->param0;
+
+        if (battery_state == BATTERY_STATE_LOW)
+        {
+            ui_service_system_sm_changed(SYSTEM_SM_SHUTDOWN);
+        }
+        else
+        {
+            ui_service_system_sm_changed(SYSTEM_SM_IDLE);
+        }
+    }
+    break;
     }
 }
 
@@ -236,6 +298,46 @@ int32_t ui_service_startup_completed_send(void)
     (void)memset(&message, 0, sizeof(message));
 
     message.id = MSG_ID_SYS_STARTUP_COMPLETED;
+
+    return service_broadcast_message(&message);
+}
+
+static int32_t ui_service_system_sm_changed(system_sm_e new_state)
+{
+    message_t message;
+    system_sm_e old_state;
+
+    old_state = ui_service_priv.system_state;
+    ui_service_priv.system_state = new_state;
+
+    ui_info("system sm changed: %s(%d) -> %s(%d)",
+            system_sm_to_name(old_state),
+            old_state,
+            system_sm_to_name(new_state),
+            new_state);
+
+    if (new_state == SYSTEM_SM_IDLE)
+    {
+        (void)led_service_setup_send(LED_ID_2, LED_TYPE_SLOW_FLASH);
+    }
+    else if (new_state == SYSTEM_SM_PREPARE)
+    {
+        (void)led_service_setup_send(LED_ID_2, LED_TYPE_QUICK_FLASH);
+    }
+    else if (new_state == SYSTEM_SM_RUNNING)
+    {
+        (void)led_service_setup_send(LED_ID_2, LED_TYPE_TURN_ON);
+    }
+    else
+    {
+        (void)led_service_setup_send(LED_ID_2, LED_TYPE_TURN_OFF);
+    }
+
+    (void)memset(&message, 0, sizeof(message));
+
+    message.id = MSG_ID_SYS_SM_CHANGED;
+    message.param0 = new_state;
+    message.param1 = old_state;
 
     return service_broadcast_message(&message);
 }

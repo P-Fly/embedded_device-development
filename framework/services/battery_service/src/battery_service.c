@@ -17,9 +17,13 @@
  */
 
 #include <string.h>
+#include <assert.h>
+
 #include "cmsis_os.h"
 #include "framework.h"
 #include "battery_service.h"
+#include "led_service.h"
+#include "ui_service.h"
 
 #define battery_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define battery_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
@@ -39,8 +43,8 @@ static void battery_service_user_clbk(adc_id_e      id,
  */
 typedef struct
 {
+    uint32_t        enable;
     battery_state_e state;
-
     uint32_t        cnt;
 } battery_service_priv_t;
 
@@ -60,6 +64,7 @@ static int32_t battery_service_init(const object* obj)
 
     (void)memset(priv_data, 0, sizeof(battery_service_priv_t));
 
+    priv_data->enable = 0;
     priv_data->state = BATTERY_STATE_BUTT;
     priv_data->cnt = 0;
 
@@ -71,7 +76,6 @@ static int32_t battery_service_init(const object* obj)
         battery_error("Service <%s> register user callback failed, ret %d.",
                       obj->name,
                       ret);
-
         return ret;
     }
 
@@ -119,6 +123,17 @@ static void battery_service_message_handler(const object*           obj,
                   message->param1,
                   message->param2,
                   message->param3);
+
+    switch (message->id)
+    {
+    case MSG_ID_SYS_STARTUP_COMPLETED:
+    {
+        battery_info("Service <%s> enable.", obj->name);
+
+        priv_data->enable = 1;
+    }
+    break;
+    }
 }
 
 int32_t battery_service_state_notify(battery_state_e state)
@@ -140,6 +155,11 @@ static void battery_service_user_clbk(adc_id_e      id,
     battery_service_priv_t* priv_data = (battery_service_priv_t*)user_ctx;
     battery_state_e state = BATTERY_STATE_BUTT;
     uint32_t voltage = data;
+
+    if (priv_data->enable != 1)
+    {
+        return;
+    }
 
     if (priv_data->cnt == 0)
     {
@@ -179,6 +199,15 @@ static void battery_service_user_clbk(adc_id_e      id,
             priv_data->state = state;
 
             (void)battery_service_state_notify(state);
+
+            if (state == BATTERY_STATE_NORMAL)
+            {
+                (void)led_service_setup_send(LED_ID_3, LED_TYPE_TURN_ON);
+            }
+            else if (state == BATTERY_STATE_LOW)
+            {
+                (void)led_service_setup_send(LED_ID_3, LED_TYPE_SLOW_FLASH);
+            }
         }
     }
 

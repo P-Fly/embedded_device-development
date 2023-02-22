@@ -63,6 +63,17 @@ typedef struct
 #define MSG_ID_SYS_HEARTBEAT (MSG_ID_SYS_SERVICE_BASE | 0x0002)
 
 /**
+ * @brief           Notify system state machine changed.
+ *
+ * @message.id      MSG_ID_SYS_SM_CHANGED
+ * @message.param0  system_sm_e new.
+ * @message.param1  system_sm_e old.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_SYS_SM_CHANGED (MSG_ID_SYS_SERVICE_BASE | 0x0003)
+
+/**
  * @brief           Set led type.
  *
  * @message.id      MSG_ID_LED_SETUP
@@ -105,6 +116,7 @@ static const msg_id_recorder_t msg_id_recorder[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED, "SYS_STARTUP_COMPLETED" },
     { MSG_ID_SYS_HEARTBEAT,         "SYS_HEARTBEAT"         },
+    { MSG_ID_SYS_SM_CHANGED,        "SYS_SM_CHANGED"        },
     { MSG_ID_LED_SETUP,             "LED_SETUP"             },
     { MSG_ID_BUTTON_STATE_NOTIFY,   "BUTTON_STATE_NOTIFY"   },
     { MSG_ID_BATTERY_STATE_NOTIFY,  "BATTERY_STATE_NOTIFY"  },
