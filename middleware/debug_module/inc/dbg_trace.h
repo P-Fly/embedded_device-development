@@ -20,5 +20,6 @@
 #define __DBG_TRACE_H__
 
 extern int32_t dbg_trace_output(const char* format, ...);
+extern uint32_t dbg_trace_get_tick(void);
 
 #endif /* __DBG_TRACE_H__ */

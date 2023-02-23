@@ -29,7 +29,8 @@
  * Log an error message.
  */
 #define pr_error(format, ...) dbg_trace_output( \
-        RED_LABEL "[E][%s][%d] " format "\r\n" NORMAL_LABEL, \
+        RED_LABEL "[E][%d][%s][%d] " format "\r\n" NORMAL_LABEL, \
+        dbg_trace_get_tick(), \
         __FUNCTION__, \
         __LINE__, \
         ## __VA_ARGS__)
@@ -38,7 +39,8 @@
  * Log a warning message.
  */
 #define pr_warning(format, ...) dbg_trace_output( \
-        RED_LABEL "[W][%s][%d] " format "\r\n" NORMAL_LABEL, \
+        RED_LABEL "[W][%d][%s][%d] " format "\r\n" NORMAL_LABEL, \
+        dbg_trace_get_tick(), \
         __FUNCTION__, \
         __LINE__, \
         ## __VA_ARGS__)
@@ -46,17 +48,21 @@
 /**
  * Log an info message.
  */
-#define pr_info(format, ...) dbg_trace_output("[I][%s][%d] " format "\r\n", \
-                                              __FUNCTION__, \
-                                              __LINE__, \
-                                              ## __VA_ARGS__)
+#define pr_info(format, ...) dbg_trace_output( \
+        "[I][%d][%s][%d] " format "\r\n", \
+        dbg_trace_get_tick(), \
+        __FUNCTION__, \
+        __LINE__, \
+        ## __VA_ARGS__)
 
 /**
  * Log a debug message.
  */
-#define pr_debug(format, ...) dbg_trace_output("[D][%s][%d] " format "\r\n", \
-                                               __FUNCTION__, \
-                                               __LINE__, \
-                                               ## __VA_ARGS__)
+#define pr_debug(format, ...) dbg_trace_output( \
+        "[D][%d][%s][%d] " format "\r\n", \
+        dbg_trace_get_tick(), \
+        __FUNCTION__, \
+        __LINE__, \
+        ## __VA_ARGS__)
 
 #endif /* __LOG_H__ */

@@ -21,6 +21,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "stm32wbxx.h"
 #include "stm32wbxx_uart.h"
 
 static inline int32_t uart_init(void)
@@ -36,6 +37,11 @@ static inline int32_t uart_deinit(void)
 static inline int32_t uart_write(const void* tx_buf, int32_t tx_len)
 {
     return stm32wbxx_uart1_write(tx_buf, tx_len);
+}
+
+static inline uint32_t sys_get_tick(void)
+{
+    return HAL_GetTick();
 }
 
 #endif /* __DBG_MODULE_WRAPPERS_H__ */

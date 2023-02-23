@@ -61,6 +61,16 @@ int32_t dbg_trace_output(const char* format, ...)
 }
 
 /**
+ * @brief   Get sys tick.
+ *
+ * @retval  Sys tick value.
+ */
+uint32_t dbg_trace_get_tick(void)
+{
+    return sys_get_tick();
+}
+
+/**
  * @brief   Probe the dbg trace.
  *
  * @param   obj Pointer to the dbg trace object handle.
