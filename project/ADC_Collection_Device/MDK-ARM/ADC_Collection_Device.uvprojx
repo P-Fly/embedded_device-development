@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4,__ASSERT_MSG,USE_FULL_ASSERT</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\inc;..\..\..\middleware\debug_module\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\middleware\adc_manager\inc;..\..\..\middleware\adc_manager\port\STM32WBxx;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\inc;..\..\..\middleware\debug_module\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\middleware\adc_manager\inc;..\..\..\middleware\adc_manager\port\STM32WBxx;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -649,6 +649,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>driver\STM32WBxx\machine</GroupName>
+          <Files>
+            <File>
+              <FileName>hardware_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\driver\STM32WBxx\machine\src\hardware_if.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>middleware\FreeRTOS</GroupName>
           <Files>
             <File>
@@ -855,11 +865,6 @@
               <FileName>ui_service.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\application\ui_service\src\ui_service.c</FilePath>
-            </File>
-            <File>
-              <FileName>hardware_if.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\application\hardware_if.c</FilePath>
             </File>
           </Files>
         </Group>
