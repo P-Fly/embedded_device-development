@@ -21,11 +21,32 @@
 #include "framework.h"
 #include "stm32wbxx.h"
 #include "hardware_if.h"
+#include "wpan_conf.h"
+
+IPCC_HandleTypeDef hipcc;
+RTC_HandleTypeDef hrtc;
+RNG_HandleTypeDef hrng;
+
+static void Config_HSE(void);
+static void Reset_Device(void);
+#if (CFG_HW_RESET_BY_FW == 1)
+static void Reset_IPCC(void);
+static void Reset_BackupDomain(void);
+#endif /* CFG_HW_RESET_BY_FW == 1*/
+static void Init_Smps(void);
+static void Init_Exti(void);
+static void Init_Rtc(void);
+static void SystemPower_Config(void);
 
 static void hardware_print_info(void);
 static void hardware_clk_enable(void);
 static void hardware_appe_config(void);
+static void hardware_appe_init(void);
 static void hardware_system_clock_config(void);
+static void hardware_periph_clock_config(void);
+static void hardware_ipcc_config(void);
+static void hardware_rtc_config(void);
+static void hardware_rng_config(void);
 
 #define CONFIG_CPU_NAME   "STM32WBxx"
 #define CONFIG_BOARD_NAME "P-NUCLEO-WB55"
@@ -45,7 +66,17 @@ void hardware_early_startup(void)
 
     hardware_system_clock_config();
 
+    hardware_periph_clock_config();
+
     hardware_clk_enable();
+
+    hardware_ipcc_config();
+
+    hardware_rtc_config();
+
+    hardware_rng_config();
+
+    hardware_appe_init();
 }
 
 /**
@@ -117,15 +148,32 @@ static void hardware_clk_enable(void)
     __HAL_RCC_DMAMUX1_CLK_ENABLE();
     __HAL_RCC_DMA1_CLK_ENABLE();
     __HAL_RCC_DMA2_CLK_ENABLE();
+    __HAL_RCC_IPCC_CLK_ENABLE();
+    __HAL_RCC_CRC_CLK_ENABLE();
+    __HAL_RCC_HSEM_CLK_ENABLE();
+    __HAL_RCC_RNG_CLK_ENABLE();
+    __HAL_RCC_RTC_ENABLE();
+    __HAL_RCC_RTCAPB_CLK_ENABLE();
 }
 
+static void Reset_Device(void)
+{
+#if (CFG_HW_RESET_BY_FW == 1)
+    Reset_BackupDomain();
+
+    Reset_IPCC();
+#endif /* CFG_HW_RESET_BY_FW == 1 */
+
+    return;
+}
+
+#if (CFG_HW_RESET_BY_FW == 1)
 static void Reset_BackupDomain(void)
 {
     if ((LL_RCC_IsActiveFlag_PINRST() != FALSE) &&
         (LL_RCC_IsActiveFlag_SFTRST() == FALSE))
     {
-        /**< Enable access to the RTC registers */
-        HAL_PWR_EnableBkUpAccess();
+        HAL_PWR_EnableBkUpAccess(); /**< Enable access to the RTC registers */
 
         /**
          *  Write twice the value to flush the APB-AHB bridge
@@ -146,48 +194,52 @@ static void Reset_IPCC(void)
 
     LL_C1_IPCC_ClearFlag_CHx(
         IPCC,
-        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 |
-        LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4 |
-        LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
+        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 | LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4
+        | LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
 
     LL_C2_IPCC_ClearFlag_CHx(
         IPCC,
-        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 |
-        LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4 |
-        LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
+        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 | LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4
+        | LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
 
     LL_C1_IPCC_DisableTransmitChannel(
         IPCC,
-        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 |
-        LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4 |
-        LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
+        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 | LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4
+        | LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
 
     LL_C2_IPCC_DisableTransmitChannel(
         IPCC,
-        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 |
-        LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4 |
-        LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
+        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 | LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4
+        | LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
 
     LL_C1_IPCC_DisableReceiveChannel(
         IPCC,
-        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 |
-        LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4 |
-        LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
+        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 | LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4
+        | LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
 
     LL_C2_IPCC_DisableReceiveChannel(
         IPCC,
-        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 |
-        LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4 |
-        LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
+        LL_IPCC_CHANNEL_1 | LL_IPCC_CHANNEL_2 | LL_IPCC_CHANNEL_3 | LL_IPCC_CHANNEL_4
+        | LL_IPCC_CHANNEL_5 | LL_IPCC_CHANNEL_6);
 
     return;
 }
+#endif /* CFG_HW_RESET_BY_FW == 1 */
 
-static void Reset_Device(void)
+static void Config_HSE(void)
 {
-    Reset_BackupDomain();
+    OTP_ID0_t* p_otp;
 
-    Reset_IPCC();
+    /**
+     * Read HSE_Tuning from OTP
+     */
+    p_otp = (OTP_ID0_t*)OTP_Read(0);
+    if (p_otp)
+    {
+        LL_RCC_HSE_SetCapacitorTuning(p_otp->hse_tuning);
+    }
+
+    return;
 }
 
 static void hardware_appe_config(void)
@@ -203,6 +255,9 @@ static void hardware_appe_config(void)
      * when either out of nReset or Power On
      */
     Reset_Device();
+
+    /* Configure HSE Tuning */
+    Config_HSE();
 
     return;
 }
@@ -223,7 +278,6 @@ static void hardware_system_clock_config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
     RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
     /**
      * Configure LSE Drive Capability
@@ -276,6 +330,15 @@ static void hardware_system_clock_config(void)
             ;
         }
     }
+}
+
+/**
+ * @brief Peripherals Common Clock Configuration
+ * @retval None
+ */
+static void hardware_periph_clock_config(void)
+{
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
     /**
      * Initializes the peripherals clocks
@@ -299,13 +362,162 @@ static void hardware_system_clock_config(void)
             ;
         }
     }
+}
+
+/* TBD: */
+static void hardware_ipcc_config(void)
+{
+    hipcc.Instance = IPCC;
+
+    if (HAL_IPCC_Init(&hipcc) != HAL_OK)
+    {
+        while (1)
+        {
+            ;
+        }
+    }
+}
+
+/* TBD: */
+static void hardware_rtc_config(void)
+{
+    hrtc.Instance = RTC;
+    hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+    hrtc.Init.AsynchPrediv = CFG_RTC_ASYNCH_PRESCALER;
+    hrtc.Init.SynchPrediv = CFG_RTC_SYNCH_PRESCALER;
+    hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+    hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+    hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+    hrtc.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+    if (HAL_RTC_Init(&hrtc) != HAL_OK)
+    {
+        while (1)
+        {
+            ;
+        }
+    }
+
+    if (HAL_RTCEx_SetWakeUpTimer_IT(&hrtc, 0,
+                                    RTC_WAKEUPCLOCK_RTCCLK_DIV16) != HAL_OK)
+    {
+        while (1)
+        {
+            ;
+        }
+    }
+}
+
+/* TBD: */
+static void hardware_rng_config(void)
+{
+    hrng.Instance = RNG;
+    hrng.Init.ClockErrorDetection = RNG_CED_ENABLE;
+    if (HAL_RNG_Init(&hrng) != HAL_OK)
+    {
+        while (1)
+        {
+            ;
+        }
+    }
+}
+
+/* TBD: */
+static void hardware_appe_init(void)
+{
+    Init_Smps();
+
+    Init_Exti();
+
+    Init_Rtc();
+
+    SystemPower_Config();
+
+    //HW_TS_Init(hw_ts_InitMode_Full, &hrtc);
+
+    //appe_Tl_Init();
 
     /**
-     * Configure and enable SMPS
+     * From now, the application is waiting for the ready event (VS_HCI_C2_Ready)
+     * received on the system channel before starting the Stack
+     * This system event is received with APPE_SysUserEvtRx()
+     */
+
+    return;
+}
+
+static void Init_Smps(void)
+{
+#if (CFG_USE_SMPS != 0)
+    /**
+     *  Configure and enable SMPS
      *
-     * The SMPS configuration is not yet supported by CubeMx
+     *  The SMPS configuration is not yet supported by CubeMx
+     *  when SMPS output voltage is set to 1.4V, the RF output power is limited to 3.7dBm
+     *  the SMPS output voltage shall be increased for higher RF output power
      */
     LL_PWR_SMPS_SetStartupCurrent(LL_PWR_SMPS_STARTUP_CURRENT_80MA);
     LL_PWR_SMPS_SetOutputVoltageLevel(LL_PWR_SMPS_OUTPUT_VOLTAGE_1V40);
     LL_PWR_SMPS_Enable();
+#endif /* CFG_USE_SMPS != 0 */
+
+    return;
+}
+
+static void Init_Exti(void)
+{
+    /* Enable IPCC(36), HSEM(38) wakeup interrupts on CPU1 */
+    LL_EXTI_EnableIT_32_63(LL_EXTI_LINE_36 | LL_EXTI_LINE_38);
+
+    return;
+}
+
+static void Init_Rtc(void)
+{
+    /* Disable RTC registers write protection */
+    LL_RTC_DisableWriteProtection(RTC);
+
+    LL_RTC_WAKEUP_SetClock(RTC, CFG_RTC_WUCKSEL_DIVIDER);
+
+    /* Enable RTC registers write protection */
+    LL_RTC_EnableWriteProtection(RTC);
+
+    return;
+}
+
+/**
+ * @brief  Configure the system for power optimization
+ *
+ * @note  This API configures the system to be ready for low power mode
+ *
+ * @param  None
+ * @retval None
+ */
+static void SystemPower_Config(void)
+{
+    /**
+     * Select HSI as system clock source after Wake Up from Stop mode
+     */
+    LL_RCC_SetClkAfterWakeFromStop(LL_RCC_STOP_WAKEUPCLOCK_HSI);
+
+    /* Initialize the CPU2 reset value before starting CPU2 with C2BOOT */
+    LL_C2_PWR_SetPowerMode(LL_PWR_MODE_SHUTDOWN);
+
+#if (CFG_USB_INTERFACE_ENABLE != 0)
+    /**
+     *  Enable USB power
+     */
+    HAL_PWREx_EnableVddUSB();
+#endif /* CFG_USB_INTERFACE_ENABLE != 0 */
+
+    return;
+}
+
+/* TBD: */
+void hci_notify_asynch_evt(void* p_Data)
+{
+}
+
+/* TBD: */
+void shci_notify_asynch_evt(void* pdata)
+{
 }

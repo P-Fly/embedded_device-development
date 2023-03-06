@@ -19,13 +19,4 @@
 #ifndef __HARDWARE_IF_H__
 #define __HARDWARE_IF_H__
 
-#include <stddef.h>
-#include <stdint.h>
-
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#include "stm32wbxx_ll_ipcc.h"
-
 #endif /* __HARDWARE_IF_H__ */

@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4,__ASSERT_MSG,USE_FULL_ASSERT</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\inc;..\..\..\middleware\debug_module\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\middleware\adc_manager\inc;..\..\..\middleware\adc_manager\port\STM32WBxx;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\utils\inc;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\middleware\FreeRTOS\Source\CMSIS_RTOS_V2;..\..\..\middleware\FreeRTOS\Source\include;..\..\..\middleware\FreeRTOS\Source\portable\RVDS\ARM_CM4F;..\..\..\middleware\debug_module\inc;..\..\..\middleware\debug_module\port\STM32WBxx;..\..\..\middleware\led_manager\inc;..\..\..\middleware\led_manager\port\STM32WBxx;..\..\..\middleware\button_manager\inc;..\..\..\middleware\button_manager\port\STM32WBxx;..\..\..\middleware\adc_manager\inc;..\..\..\middleware\adc_manager\port\STM32WBxx;..\..\..\middleware\wpan_manager\inc;..\..\..\middleware\wpan_manager\port\STM32WBxx\inc;..\..\..\middleware\wpan_manager\port\STM32WBxx\core;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\template;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\shci;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl;..\..\..\middleware\wpan_manager\port\STM32WBxx\core\utilities;..\..\..\framework\base\inc;..\..\..\framework\services\battery_service\inc;..\..\..\framework\services\ble_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\data_service\inc;..\..\..\framework\services\display_service\inc;..\..\..\framework\services\led_service\inc;..\application\ui_service\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -775,6 +775,121 @@
               <FileName>stm32wbxx_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\middleware\adc_manager\port\STM32WBxx\stm32wbxx_adc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\wpan_manager\port\STM32WBxx\core\ble\core</GroupName>
+          <Files>
+            <File>
+              <FileName>ble_events.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\auto\ble_events.c</FilePath>
+            </File>
+            <File>
+              <FileName>ble_gap_aci.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\auto\ble_gap_aci.c</FilePath>
+            </File>
+            <File>
+              <FileName>ble_gatt_aci.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\auto\ble_gatt_aci.c</FilePath>
+            </File>
+            <File>
+              <FileName>ble_hal_aci.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\auto\ble_hal_aci.c</FilePath>
+            </File>
+            <File>
+              <FileName>ble_hci_le.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\auto\ble_hci_le.c</FilePath>
+            </File>
+            <File>
+              <FileName>ble_l2cap_aci.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\auto\ble_l2cap_aci.c</FilePath>
+            </File>
+            <File>
+              <FileName>osal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\ble\core\template\osal.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\shci</GroupName>
+          <Files>
+            <File>
+              <FileName>shci.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\shci\shci.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl</GroupName>
+          <Files>
+            <File>
+              <FileName>hci_tl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl\hci_tl.c</FilePath>
+            </File>
+            <File>
+              <FileName>shci_tl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl\shci_tl.c</FilePath>
+            </File>
+            <File>
+              <FileName>hci_tl_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl\hci_tl_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>shci_tl_if.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl\shci_tl_if.c</FilePath>
+            </File>
+            <File>
+              <FileName>tl_mbox.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\interface\patterns\ble_thread\tl\tl_mbox.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\wpan_manager\port\STM32WBxx\utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>otp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\utilities\otp.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm_list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\core\utilities\stm_list.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\wpan_manager\port\STM32WBxx\target</GroupName>
+          <Files>
+            <File>
+              <FileName>hw_ipcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\target\hw_ipcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>hw_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\target\hw_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>hw_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\port\STM32WBxx\target\hw_it.c</FilePath>
             </File>
           </Files>
         </Group>
