@@ -779,6 +779,21 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>middleware\wpan_manager</GroupName>
+          <Files>
+            <File>
+              <FileName>hci_manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\src\hci_manager.c</FilePath>
+            </File>
+            <File>
+              <FileName>shci_manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\wpan_manager\src\shci_manager.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>middleware\wpan_manager\port\STM32WBxx\core\ble\core</GroupName>
           <Files>
             <File>

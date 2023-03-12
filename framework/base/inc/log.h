@@ -65,4 +65,9 @@
         __LINE__, \
         ## __VA_ARGS__)
 
+/**
+ * No message to print.
+ */
+#define pr_no_mesg(...)
+
 #endif /* __LOG_H__ */

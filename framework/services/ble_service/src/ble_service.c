@@ -19,10 +19,12 @@
 #include <string.h>
 #include "cmsis_os.h"
 #include "framework.h"
+#include "shci_manager.h"
+#include "hci_manager.h"
 
-#define ble_error(str, ...)   pr_error(str, ##__VA_ARGS__)
-#define ble_warning(str, ...) pr_warning(str, ##__VA_ARGS__)
-#define ble_info(str, ...)    pr_info(str, ##__VA_ARGS__)
+#define ble_error(str, ...)   pr_error(str, ## __VA_ARGS__)
+#define ble_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
+#define ble_info(str, ...)    pr_info(str, ## __VA_ARGS__)
 #define ble_debug(str, ...)   //pr_debug(str, ##__VA_ARGS__)
 
 /**
@@ -32,6 +34,20 @@ typedef struct
 {
     int32_t reserved;
 } ble_service_priv_t;
+
+static void ble_service_shci_tl_user_clbk(uint32_t      evt_code,
+                                          const void*   user_ctx)
+{
+    ble_service_priv_t* priv_data = (ble_service_priv_t*)user_ctx;
+
+    (void)priv_data;
+
+    if (evt_code == SHCI_SUB_EVT_CODE_READY)
+    {
+        /* TBD: */
+        //APP_BLE_Init();
+    }
+}
 
 /**
  * @brief   Initialize the ble service.
@@ -43,8 +59,20 @@ typedef struct
 static int32_t ble_service_init(const object* obj)
 {
     ble_service_priv_t* priv_data = service_get_priv_data(obj);
+    int32_t ret;
 
     (void)memset(priv_data, 0, sizeof(ble_service_priv_t));
+
+    ret = shci_tl_init(ble_service_shci_tl_user_clbk, priv_data);
+    if (ret)
+    {
+        ble_error(
+            "Service <%s> initialize shci transport layer failed, ret %d.",
+            obj->name,
+            ret);
+
+        return ret;
+    }
 
     ble_info("Service <%s> initialize succeed.", obj->name);
 
@@ -81,13 +109,13 @@ static void ble_service_message_handler(const object*           obj,
     ble_service_priv_t* priv_data = service_get_priv_data(obj);
 
     ble_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
-            obj->name,
-            msg_id_to_name(message->id),
-            message->id,
-            message->param0,
-            message->param1,
-            message->param2,
-            message->param3);
+              obj->name,
+              msg_id_to_name(message->id),
+              message->id,
+              message->param0,
+              message->param1,
+              message->param2,
+              message->param3);
 }
 
 static ble_service_priv_t ble_service_priv;

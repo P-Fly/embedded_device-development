@@ -1,13 +1,14 @@
 #include "wpan_app_common.h"
 
 extern IPCC_HandleTypeDef hipcc;
-extern RTC_HandleTypeDef hrtc;
 /* TBD: */
 #if 0
+extern RTC_HandleTypeDef hrtc;
 extern TIM_HandleTypeDef htim17;
 #endif
 
 /* TBD: */
+#if 0
 /**
  * @brief This function handles RTC wake-up interrupt through EXTI line 19.
  */
@@ -15,6 +16,7 @@ void RTC_WKUP_IRQHandler(void)
 {
     HAL_RTCEx_WakeUpTimerIRQHandler(&hrtc);
 }
+#endif
 
 /* TBD: */
 #if 0

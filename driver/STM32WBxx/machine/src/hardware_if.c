@@ -24,7 +24,9 @@
 #include "wpan_conf.h"
 
 IPCC_HandleTypeDef hipcc;
+#if 0
 RTC_HandleTypeDef hrtc;
+#endif
 RNG_HandleTypeDef hrng;
 
 static void Config_HSE(void);
@@ -45,7 +47,9 @@ static void hardware_appe_init(void);
 static void hardware_system_clock_config(void);
 static void hardware_periph_clock_config(void);
 static void hardware_ipcc_config(void);
+#if 0
 static void hardware_rtc_config(void);
+#endif
 static void hardware_rng_config(void);
 
 #define CONFIG_CPU_NAME   "STM32WBxx"
@@ -72,7 +76,9 @@ void hardware_early_startup(void)
 
     hardware_ipcc_config();
 
+#if 0
     hardware_rtc_config();
+#endif
 
     hardware_rng_config();
 
@@ -379,6 +385,7 @@ static void hardware_ipcc_config(void)
 }
 
 /* TBD: */
+#if 0
 static void hardware_rtc_config(void)
 {
     hrtc.Instance = RTC;
@@ -406,6 +413,7 @@ static void hardware_rtc_config(void)
         }
     }
 }
+#endif
 
 /* TBD: */
 static void hardware_rng_config(void)
@@ -432,15 +440,11 @@ static void hardware_appe_init(void)
 
     SystemPower_Config();
 
+    /* TBD: */
     //HW_TS_Init(hw_ts_InitMode_Full, &hrtc);
 
-    //appe_Tl_Init();
-
-    /**
-     * From now, the application is waiting for the ready event (VS_HCI_C2_Ready)
-     * received on the system channel before starting the Stack
-     * This system event is received with APPE_SysUserEvtRx()
-     */
+    /* TBD: */
+    //APPD_Init();
 
     return;
 }
@@ -517,7 +521,3 @@ void hci_notify_asynch_evt(void* p_Data)
 {
 }
 
-/* TBD: */
-void shci_notify_asynch_evt(void* pdata)
-{
-}
