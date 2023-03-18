@@ -515,9 +515,3 @@ static void SystemPower_Config(void)
 
     return;
 }
-
-/* TBD: */
-void hci_notify_asynch_evt(void* p_Data)
-{
-}
-

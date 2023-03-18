@@ -7,6 +7,7 @@
 #include "tl.h"
 #include "shci_tl.h"
 #include "shci.h"
+#include "hci_tl.h"
 #include "otp.h"
 
 #endif /* __WPAN_CONF_H__ */

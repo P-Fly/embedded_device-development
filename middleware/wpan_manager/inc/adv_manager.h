@@ -16,16 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __HCI_MANAGER_H__
-#define __HCI_MANAGER_H__
+#ifndef __ADV_MANAGER_H__
+#define __ADV_MANAGER_H__
 
 #include "wpan_conf.h"
 
-typedef void (* hci_tl_user_clbk_t)(uint32_t evt_code, const void* user_ctx);
+typedef enum
+{
+    ADV_STATE_IDLE,
+    ADV_STATE_FAST,
+    ADV_STATE_LP,
 
-extern int32_t hci_tl_init(hci_tl_user_clbk_t user_clbk, const void* user_ctx);
-extern int32_t hci_tl_disconnect(void);
-extern const uint8_t* ble_get_public_bd_addr(void);
-extern const uint8_t* ble_get_random_bd_addr(void);
+    ADV_STATE_BUTT,
+} adv_state_e;
 
-#endif /* __HCI_MANAGER_H__ */
+#define ADV_TIMEOUT_EVT_CODE 0x01
+
+typedef void (* adv_user_clbk_t)(uint32_t evt_code, const void* user_ctx);
+
+extern int32_t adv_init(adv_user_clbk_t user_clbk, const void* user_ctx);
+extern int32_t adv_setup(adv_state_e state);
+
+#endif /* __ADV_MANAGER_H__ */

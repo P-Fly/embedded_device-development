@@ -102,6 +102,10 @@
 #define CONFIG_HCI_MANAGER_NAME "hci manager"
 #define CONFIG_HCI_MANAGER_LABEL hci_manager
 
+#define CONFIG_ADV_MANAGER_NAME "adv manager"
+#define CONFIG_ADV_MANAGER_LABEL adv_manager
+#define CONFIG_ADV_MANAGER_TIMER_NAME "adv manager timer"
+
 #define CONFIG_DBG_TRACE_NAME "dbg"
 #define CONFIG_DBG_TRACE_LABEL dbg_trace_module
 #define CONFIG_DBG_TRACE_MAX_LEN 256

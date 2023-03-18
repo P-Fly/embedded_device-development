@@ -554,7 +554,7 @@ typedef enum
 /**
  * Enable or Disable traces in application
  */
-#define CFG_DEBUG_APP_TRACE     1
+#define CFG_DEBUG_APP_TRACE     0
 
 #if (CFG_DEBUG_APP_TRACE != 0)
 #define APP_DBG_MSG                 pr_info
@@ -639,22 +639,6 @@ typedef enum
 #define CFG_HRS_PROCESS_STACK_MEM             (0)
 #define CFG_HRS_PROCESS_PRIORITY              osPriorityNone
 #define CFG_HRS_PROCESS_STACK_SIZE            (128 * 20)
-
-/******************************************************************************
- * LOW POWER
- ******************************************************************************/
-/**
- * Supported requester to the MCU Low Power Manager - can be increased up  to 32
- * It list a bit mapping of all user of the Low Power Manager
- */
-typedef enum
-{
-  CFG_LPM_APP,
-  CFG_LPM_APP_BLE,
-  /* USER CODE BEGIN CFG_LPM_Id_t */
-
-  /* USER CODE END CFG_LPM_Id_t */
-} CFG_LPM_Id_t;
 
 /******************************************************************************
  * OTP manager

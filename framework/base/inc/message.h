@@ -96,6 +96,50 @@ typedef struct
 #define MSG_ID_BUTTON_STATE_NOTIFY (MSG_ID_BUTTON_SERVICE_BASE | 0x0001)
 
 /**
+ * @brief           Notify BLE SHCI ready.
+ *
+ * @message.id      MSG_ID_BLE_SHCI_READY
+ * @message.param0  None.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_BLE_SHCI_READY (MSG_ID_BLE_SERVICE_BASE | 0x0001)
+
+/**
+ * @brief           Notify BLE ADV timeout.
+ *
+ * @message.id      MSG_ID_BLE_ADV_TIMEOUT
+ * @message.param0  None.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_BLE_ADV_TIMEOUT (MSG_ID_BLE_SERVICE_BASE | 0x0002)
+
+/**
+ * @brief           Notify BLE HCI connected.
+ *
+ * @message.id      MSG_ID_BLE_HCI_CONNECTED
+ * @message.param0  None.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_BLE_HCI_CONNECTED (MSG_ID_BLE_SERVICE_BASE | 0x0003)
+
+/**
+ * @brief           Notify BLE HCI disconnected.
+ *
+ * @message.id      MSG_ID_BLE_HCI_DISCONNECTED
+ * @message.param0  None.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_BLE_HCI_DISCONNECTED (MSG_ID_BLE_SERVICE_BASE | 0x0004)
+
+/**
  * @brief           Notify battery state.
  *
  * @message.id      MSG_ID_BATTERY_STATE_NOTIFY
@@ -119,6 +163,10 @@ static const msg_id_recorder_t msg_id_recorder[] =
     { MSG_ID_SYS_SM_CHANGED,        "SYS_SM_CHANGED"        },
     { MSG_ID_LED_SETUP,             "LED_SETUP"             },
     { MSG_ID_BUTTON_STATE_NOTIFY,   "BUTTON_STATE_NOTIFY"   },
+    { MSG_ID_BLE_SHCI_READY,        "BLE_SHCI_READY"        },
+    { MSG_ID_BLE_ADV_TIMEOUT,       "BLE_ADV_TIMEOUT"       },
+    { MSG_ID_BLE_HCI_CONNECTED,     "BLE_HCI_CONNECTED"     },
+    { MSG_ID_BLE_HCI_DISCONNECTED,  "BLE_HCI_DISCONNECTED"  },
     { MSG_ID_BATTERY_STATE_NOTIFY,  "BATTERY_STATE_NOTIFY"  },
 };
 

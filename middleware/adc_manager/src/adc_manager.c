@@ -60,17 +60,18 @@ static void adc_manager_timer_callback(void* argument)
 {
     osStatus_t stat;
     int32_t ret;
-    
+
     ret = adc_start();
     if (ret)
     {
-        pr_error("ADC manager start conv failed, ret %d.", ret);
+        adc_error("ADC manager start conv failed, ret %d.", ret);
     }
 
-    stat = osTimerStart(adc_manager_handle.timer, 2 * osKernelGetTickFreq() / 1000);
+    stat = osTimerStart(adc_manager_handle.timer,
+                        2 * osKernelGetTickFreq() / 1000);
     if (stat != osOK)
     {
-        pr_error("ADC manager timer start failed, stat %d.", stat);
+        adc_error("ADC manager timer start failed, stat %d.", stat);
     }
 }
 
@@ -98,7 +99,7 @@ void adc_manager_driver_conv_cplt_clbk(adc_id_e id, uint16_t data)
  */
 void adc_manager_driver_error_clbk(void)
 {
-    pr_error("ADC manager driver error callback.");
+    adc_error("ADC manager driver error callback.");
 }
 
 /**
@@ -180,10 +181,11 @@ static int32_t adc_manager_probe(const object* obj)
             adc_manager_timer_attr.name);
     }
 
-    stat = osTimerStart(adc_manager_handle.timer, 2 * osKernelGetTickFreq() / 1000);
+    stat = osTimerStart(adc_manager_handle.timer,
+                        2 * osKernelGetTickFreq() / 1000);
     if (stat != osOK)
     {
-        pr_error("ADC manager timer start failed, stat %d.", stat);
+        adc_error("ADC manager timer start failed, stat %d.", stat);
     }
 
     adc_info("Manager <%s> probe succeed.", obj->name);

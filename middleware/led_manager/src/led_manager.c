@@ -86,7 +86,7 @@ int32_t led_manager_setup(led_id_e id, led_type_e type)
                             1000);
         if (stat != osOK)
         {
-            pr_error("Led manager timer %d start failed, stat %d.", id, stat);
+            led_error("Led manager timer %d start failed, stat %d.", id, stat);
         }
         break;
 
@@ -98,7 +98,7 @@ int32_t led_manager_setup(led_id_e id, led_type_e type)
                             1000);
         if (stat != osOK)
         {
-            pr_error("Led manager timer %d start failed, stat %d.", id, stat);
+            led_error("Led manager timer %d start failed, stat %d.", id, stat);
         }
         break;
 
@@ -131,7 +131,7 @@ static void led_manager_timer_callback(void* argument)
                         1000);
     if (stat != osOK)
     {
-        pr_error("Led manager timer %d restart failed, stat %d.", id, stat);
+        led_error("Led manager timer %d restart failed, stat %d.", id, stat);
     }
 }
 

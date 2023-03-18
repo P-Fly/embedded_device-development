@@ -23,63 +23,10 @@
 #include "framework.h"
 #include "shci_manager.h"
 
-#define shci_manager_error(str, ...)   pr_error(str, ## __VA_ARGS__)
-#define shci_manager_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
-#define shci_manager_info(str, ...)    pr_info(str, ## __VA_ARGS__)
-#define shci_manager_debug(str, ...)   pr_debug(str, ## __VA_ARGS__)
-
-/**
- * @brief   SHCI manager handle definition.
- */
-typedef struct
-{
-    shci_tl_user_clbk_t user_clbk;
-    const void*         user_ctx;
-} shci_manager_handle_t;
-
-static shci_manager_handle_t shci_manager_handle;
-
-/**
- * @brief   Probe the SHCI manager.
- *
- * @param   obj Pointer to the SHCI manager object handle.
- *
- * @retval  Returns 0 on success, negative error code otherwise.
- */
-static int32_t shci_manager_probe(const object* obj)
-{
-    shci_manager_handle_t* handle = (shci_manager_handle_t*)obj->object_data;
-
-    (void)memset(handle, 0, sizeof(shci_manager_handle_t));
-
-    shci_manager_info("Manager <%s> probe succeed.", obj->name);
-
-    return 0;
-}
-
-/**
- * @brief   Remove the SHCI manager.
- *
- * @param   obj Pointer to the SHCI manager object handle.
- *
- * @retval  Returns 0 on success, negative error code otherwise.
- */
-static int32_t shci_manager_shutdown(const object* obj)
-{
-    shci_manager_handle_t* handle = (shci_manager_handle_t*)obj->object_data;
-
-    (void)handle;
-
-    shci_manager_info("Manager <%s> shutdown succeed.", obj->name);
-
-    return 0;
-}
-
-module_middleware(CONFIG_SHCI_MANAGER_NAME,
-                  CONFIG_SHCI_MANAGER_LABEL,
-                  shci_manager_probe,
-                  shci_manager_shutdown,
-                  NULL, &shci_manager_handle, NULL);
+#define shci_error(str, ...)   pr_error(str, ## __VA_ARGS__)
+#define shci_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
+#define shci_info(str, ...)    pr_info(str, ## __VA_ARGS__)
+#define shci_debug(str, ...)   pr_debug(str, ## __VA_ARGS__)
 
 #define POOL_SIZE (CFG_TLBLE_EVT_QUEUE_LENGTH * 4U * \
                    DIVC((sizeof(TL_PacketHeader_t) + \
@@ -92,11 +39,8 @@ PLACE_IN_SECTION("MB_MEM2") ALIGN(4) static uint8_t \
 PLACE_IN_SECTION("MB_MEM2") ALIGN(4) static uint8_t \
     BleSpareEvtBuffer[sizeof(TL_PacketHeader_t) + TL_EVT_HDR_SIZE + 255];
 
-static osMutexId_t MtxShciId;
-static osSemaphoreId_t SemShciId;
-static osThreadId_t ShciUserEvtProcessId;
-
-const osThreadAttr_t ShciUserEvtProcess_attr = {
+static const osThreadAttr_t shci_user_thread_attr =
+{
     .name       = CFG_SHCI_USER_EVT_PROCESS_NAME,
     .attr_bits  = CFG_SHCI_USER_EVT_PROCESS_ATTR_BITS,
     .cb_mem     = CFG_SHCI_USER_EVT_PROCESS_CB_MEM,
@@ -106,11 +50,26 @@ const osThreadAttr_t ShciUserEvtProcess_attr = {
     .stack_size = CFG_SHCI_USER_EVT_PROCESS_STACK_SIZE
 };
 
+/**
+ * @brief   SHCI manager handle definition.
+ */
+typedef struct
+{
+    shci_tl_user_clbk_t user_clbk;
+    const void*         user_ctx;
+
+    osMutexId_t         shci_mutex_id;
+    osSemaphoreId_t     shci_sem_id;
+    osThreadId_t        shci_thread_id;
+} shci_manager_handle_t;
+
+static shci_manager_handle_t shci_manager_handle;
+
 static void shci_tl_thread(void* argument);
 static void shci_tl_status_not(SHCI_TL_CmdStatus_t status);
 static void shci_tl_user_evt(void* pPayload);
-static void shci_tl_ready_processing(void* pPayload);
 static void shci_tl_evt_error(void* pPayload);
+static void shci_tl_ready_processing(void* pPayload);
 
 int32_t shci_tl_init(shci_tl_user_clbk_t user_clbk, const void* user_ctx)
 {
@@ -127,19 +86,10 @@ int32_t shci_tl_init(shci_tl_user_clbk_t user_clbk, const void* user_ctx)
 
     TL_Init();
 
-    MtxShciId = osMutexNew(NULL);
-    SemShciId = osSemaphoreNew(1, 0, NULL);
-
-    ShciUserEvtProcessId = osThreadNew(shci_tl_thread,
-                                       NULL,
-                                       &ShciUserEvtProcess_attr);
-
-    /**< System channel initialization */
     SHci_Tl_Init_Conf.p_cmdbuffer = (uint8_t*)&SystemCmdBuffer;
     SHci_Tl_Init_Conf.StatusNotCallBack = shci_tl_status_not;
     shci_init(shci_tl_user_evt, (void*)&SHci_Tl_Init_Conf);
 
-    /**< Memory Manager channel initialization */
     tl_mm_config.p_BleSpareEvtBuffer = BleSpareEvtBuffer;
     tl_mm_config.p_SystemSpareEvtBuffer = SystemSpareEvtBuffer;
     tl_mm_config.p_AsynchEvtPool = EvtPool;
@@ -156,11 +106,11 @@ static void shci_tl_status_not(SHCI_TL_CmdStatus_t status)
     switch (status)
     {
     case SHCI_TL_CmdBusy:
-        osMutexAcquire(MtxShciId, osWaitForever);
+        osMutexAcquire(shci_manager_handle.shci_mutex_id, osWaitForever);
         break;
 
     case SHCI_TL_CmdAvailable:
-        osMutexRelease(MtxShciId);
+        osMutexRelease(shci_manager_handle.shci_mutex_id);
         break;
 
     default:
@@ -187,23 +137,23 @@ static void shci_tl_user_evt(void* pPayload)
                   (((tSHCI_UserEvtRxParam*)pPayload)->pckt->evtserial.evt.
                    payload);
 
-    shci_manager_info("Received shci user event, subevtcode 0x%x.",
-                      p_sys_event->subevtcode);
+    shci_info("Received shci user event, subevtcode 0x%x.",
+              p_sys_event->subevtcode);
 
     switch (p_sys_event->subevtcode)
     {
     case SHCI_SUB_EVT_CODE_READY:
         SHCI_GetWirelessFwInfo(&WirelessInfo);
-        shci_manager_info("Wireless Firmware version %d.%d.%d",
-                          WirelessInfo.VersionMajor,
-                          WirelessInfo.VersionMinor,
-                          WirelessInfo.VersionSub);
-        shci_manager_info("Wireless Firmware build %d",
-                          WirelessInfo.VersionReleaseType);
-        shci_manager_info("FUS version %d.%d.%d",
-                          WirelessInfo.FusVersionMajor,
-                          WirelessInfo.FusVersionMinor,
-                          WirelessInfo.FusVersionSub);
+        shci_info("Wireless Firmware version %d.%d.%d",
+                  WirelessInfo.VersionMajor,
+                  WirelessInfo.VersionMinor,
+                  WirelessInfo.VersionSub);
+        shci_info("Wireless Firmware build %d",
+                  WirelessInfo.VersionReleaseType);
+        shci_info("FUS version %d.%d.%d",
+                  WirelessInfo.FusVersionMajor,
+                  WirelessInfo.FusVersionMinor,
+                  WirelessInfo.FusVersionSub);
         shci_tl_ready_processing(pPayload);
         break;
 
@@ -212,30 +162,30 @@ static void shci_tl_user_evt(void* pPayload)
         break;
 
     case SHCI_SUB_EVT_BLE_NVM_RAM_UPDATE:
-        shci_manager_info(
+        shci_info(
             "NVM ram update, address = %lx, size = %ld.",
             ((SHCI_C2_BleNvmRamUpdate_Evt_t*)p_sys_event->payload)->StartAddress,
             ((SHCI_C2_BleNvmRamUpdate_Evt_t*)p_sys_event->payload)->Size);
         break;
 
     case SHCI_SUB_EVT_NVM_START_WRITE:
-        shci_manager_info(
+        shci_info(
             "NVM start write, NumberOfWords = %ld.",
             ((SHCI_C2_NvmStartWrite_Evt_t*)p_sys_event->payload)->NumberOfWords);
         break;
 
     case SHCI_SUB_EVT_NVM_END_WRITE:
-        shci_manager_info("NVM end write.");
+        shci_info("NVM end write.");
         break;
 
     case SHCI_SUB_EVT_NVM_START_ERASE:
-        shci_manager_info(
+        shci_info(
             "NVM start erase, NumberOfSectors = %ld.",
             ((SHCI_C2_NvmStartErase_Evt_t*)p_sys_event->payload)->NumberOfSectors);
         break;
 
     case SHCI_SUB_EVT_NVM_END_ERASE:
-        shci_manager_info("NVM end erase.");
+        shci_info("NVM end erase.");
         break;
 
     default:
@@ -268,8 +218,8 @@ static void shci_tl_evt_error(void* pPayload)
                    payload);
     p_sys_error_code = (SCHI_SystemErrCode_t*)p_sys_event->payload;
 
-    shci_manager_error("Received shci event error, sys_error_code %d.",
-                       (*p_sys_error_code));
+    shci_error("Received shci event error, sys_error_code %d.",
+               (*p_sys_error_code));
 
     return;
 }
@@ -293,7 +243,7 @@ static void shci_tl_ready_processing(void* pPayload)
         /**
          * The wireless firmware is running on the CPU2
          */
-        shci_manager_info("The wireless firmware is running on the CPU2.");
+        shci_info("The wireless firmware is running on the CPU2.");
 
         /* Traces channel initialization */
         /* TBD: */
@@ -327,10 +277,11 @@ static void shci_tl_ready_processing(void* pPayload)
         DeviceID = LL_DBGMCU_GetDeviceID();
         config_param.DeviceID = (uint16_t)DeviceID;
 
-        shci_manager_info("Get RevisionID 0x%x.", RevisionID);
-        shci_manager_info("Get DeviceID 0x%x.", DeviceID);
+        shci_info("Get RevisionID 0x%x, DeviceID 0x%x.", RevisionID, DeviceID);
 
         (void)SHCI_C2_Config(&config_param);
+
+        shci_info("Initialize shci succeed.");
     }
     else if (p_sys_ready_event->sysevt_ready_rsp == FUS_FW_RUNNING)
     {
@@ -338,7 +289,7 @@ static void shci_tl_ready_processing(void* pPayload)
          * The FUS firmware is running on the CPU2
          * In the scope of this application, there should be no case when we get here
          */
-        shci_manager_error("The FUS firmware is running on the CPU2.");
+        shci_error("The FUS firmware is running on the CPU2.");
 
         /* The packet shall not be released as this is not supported by the FUS */
         ((tSHCI_UserEvtRxParam*)pPayload)->status =
@@ -346,7 +297,7 @@ static void shci_tl_ready_processing(void* pPayload)
     }
     else
     {
-        shci_manager_error("Ready rsp unexpected case.");
+        shci_error("Ready rsp unexpected case.");
     }
 
     return;
@@ -365,20 +316,104 @@ static void shci_tl_thread(void* argument)
 void shci_notify_asynch_evt(void* pdata)
 {
     UNUSED(pdata);
-    osThreadFlagsSet(ShciUserEvtProcessId, 1);
+    osThreadFlagsSet(shci_manager_handle.shci_thread_id, 1);
     return;
 }
 
 void shci_cmd_resp_release(uint32_t flag)
 {
     UNUSED(flag);
-    osSemaphoreRelease(SemShciId);
+    osSemaphoreRelease(shci_manager_handle.shci_sem_id);
     return;
 }
 
 void shci_cmd_resp_wait(uint32_t timeout)
 {
     UNUSED(timeout);
-    osSemaphoreAcquire(SemShciId, osWaitForever);
+    osSemaphoreAcquire(shci_manager_handle.shci_sem_id, osWaitForever);
     return;
 }
+
+/**
+ * @brief   Probe the SHCI manager.
+ *
+ * @param   obj Pointer to the SHCI manager object handle.
+ *
+ * @retval  Returns 0 on success, negative error code otherwise.
+ */
+static int32_t shci_manager_probe(const object* obj)
+{
+    shci_manager_handle_t* handle = (shci_manager_handle_t*)obj->object_data;
+
+    (void)memset(handle, 0, sizeof(shci_manager_handle_t));
+
+    handle->shci_mutex_id = osMutexNew(NULL);
+    if (!handle->shci_mutex_id)
+    {
+        shci_error("Manager <%s> create mutex failed.", obj->name);
+
+        return -EINVAL;
+    }
+    else
+    {
+        shci_info("Manager <%s> create mutex succeed.", obj->name);
+    }
+
+    handle->shci_sem_id = osSemaphoreNew(1, 0, NULL);
+    if (!handle->shci_sem_id)
+    {
+        shci_error("Manager <%s> create semaphore failed.", obj->name);
+
+        return -EINVAL;
+    }
+    else
+    {
+        shci_info("Manager <%s> create semaphore succeed.", obj->name);
+    }
+
+    handle->shci_thread_id = osThreadNew(shci_tl_thread,
+                                         NULL,
+                                         &shci_user_thread_attr);
+    if (!handle->shci_thread_id)
+    {
+        shci_error("Manager <%s> create thread <%s> failed.",
+                   obj->name,
+                   shci_user_thread_attr.name);
+
+        return -EINVAL;
+    }
+    else
+    {
+        shci_info("Manager <%s> create thread <%s> succeed.",
+                  obj->name,
+                  shci_user_thread_attr.name);
+    }
+
+    shci_info("Manager <%s> probe succeed.", obj->name);
+
+    return 0;
+}
+
+/**
+ * @brief   Remove the SHCI manager.
+ *
+ * @param   obj Pointer to the SHCI manager object handle.
+ *
+ * @retval  Returns 0 on success, negative error code otherwise.
+ */
+static int32_t shci_manager_shutdown(const object* obj)
+{
+    shci_manager_handle_t* handle = (shci_manager_handle_t*)obj->object_data;
+
+    (void)handle;
+
+    shci_info("Manager <%s> shutdown succeed.", obj->name);
+
+    return 0;
+}
+
+module_middleware(CONFIG_SHCI_MANAGER_NAME,
+                  CONFIG_SHCI_MANAGER_LABEL,
+                  shci_manager_probe,
+                  shci_manager_shutdown,
+                  NULL, &shci_manager_handle, NULL);
