@@ -21,6 +21,7 @@
 #include "framework.h"
 #include "ui_service.h"
 #include "led_service.h"
+#include "ecg_gatt_service.h"
 #include "shci_manager.h"
 #include "hci_manager.h"
 #include "adv_manager.h"
@@ -180,6 +181,15 @@ static void ble_service_message_handler(const object*           obj,
         {
             ble_error(
                 "Service <%s> initialize hci transport layer failed, ret %d.",
+                obj->name,
+                ret);
+        }
+
+        ret = ecg_gatt_service_init();
+        if (ret)
+        {
+            ble_error(
+                "Service <%s> initialize ecg gatt service failed, ret %d.",
                 obj->name,
                 ret);
         }

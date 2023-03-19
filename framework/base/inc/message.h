@@ -36,7 +36,7 @@ typedef struct
 #define MSG_ID_LED_SERVICE_BASE     0x00000100
 #define MSG_ID_BUTTON_SERVICE_BASE  0x00000200
 #define MSG_ID_DISPLAY_SERVICE_BASE 0x00000300
-#define MSG_ID_DATA_SERVICE_BASE    0x00000400
+#define MSG_ID_ECG_SERVICE_BASE     0x00000400
 #define MSG_ID_BLE_SERVICE_BASE     0x00000500
 #define MSG_ID_BATTERY_SERVICE_BASE 0x00000600
 
@@ -94,6 +94,17 @@ typedef struct
  * @message.param3  None.
  */
 #define MSG_ID_BUTTON_STATE_NOTIFY (MSG_ID_BUTTON_SERVICE_BASE | 0x0001)
+
+/**
+ * @brief           Notify ECG data.
+ *
+ * @message.id      MSG_ID_ECG_DATA
+ * @message.param0  Data[1] and Data[0].
+ * @message.param1  Data[3] and Data[2].
+ * @message.param2  Data[5] and Data[4].
+ * @message.param3  Data[7] and Data[6].
+ */
+#define MSG_ID_ECG_DATA (MSG_ID_ECG_SERVICE_BASE | 0x0001)
 
 /**
  * @brief           Notify BLE SHCI ready.
@@ -163,6 +174,7 @@ static const msg_id_recorder_t msg_id_recorder[] =
     { MSG_ID_SYS_SM_CHANGED,        "SYS_SM_CHANGED"        },
     { MSG_ID_LED_SETUP,             "LED_SETUP"             },
     { MSG_ID_BUTTON_STATE_NOTIFY,   "BUTTON_STATE_NOTIFY"   },
+    { MSG_ID_ECG_DATA,              "ECG_DATA"              },
     { MSG_ID_BLE_SHCI_READY,        "BLE_SHCI_READY"        },
     { MSG_ID_BLE_ADV_TIMEOUT,       "BLE_ADV_TIMEOUT"       },
     { MSG_ID_BLE_HCI_CONNECTED,     "BLE_HCI_CONNECTED"     },
