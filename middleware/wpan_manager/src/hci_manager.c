@@ -23,6 +23,7 @@
 #include "cmsis_os.h"
 #include "framework.h"
 #include "hci_manager.h"
+#include "rng_manager.h"
 
 #define hci_error(str, ...)   pr_error(str, ## __VA_ARGS__)
 #define hci_warning(str, ...) pr_warning(str, ## __VA_ARGS__)
@@ -78,13 +79,16 @@ typedef struct
 
 static hci_manager_handle_t hci_manager_handle;
 
-static void hci_tl_generate_bd_addr(hci_manager_handle_t* handle);
+static void hci_tl_generate_public_bd_addr(hci_manager_handle_t* handle);
+#if CONFIG_GAP_ADDRESS_TYPE != GAP_PUBLIC_ADDR
+static int32_t hci_tl_generate_random_bd_addr(hci_manager_handle_t* handle);
+#endif
 static int32_t hci_tl_gap_gatt_init(void);
 static void hci_tl_thread(void* argument);
 static void hci_tl_user_evt(void* p_Payload);
 static void hci_tl_status_not(HCI_TL_CmdStatus_t Status);
 
-static void hci_tl_generate_bd_addr(hci_manager_handle_t* handle)
+static void hci_tl_generate_public_bd_addr(hci_manager_handle_t* handle)
 {
     uint8_t* p_otp_addr;
     const uint8_t* p_bd_addr;
@@ -138,6 +142,38 @@ static void hci_tl_generate_bd_addr(hci_manager_handle_t* handle)
     }
 }
 
+#if CONFIG_GAP_ADDRESS_TYPE != GAP_PUBLIC_ADDR
+static int32_t hci_tl_generate_random_bd_addr(hci_manager_handle_t* handle)
+{
+    uint32_t srd_bd_addr[2];
+    int32_t ret;
+
+    ret = rng_manager_generate_random_number(&srd_bd_addr[1]);
+    if (ret)
+    {
+        return ret;
+    }
+
+    ret = rng_manager_generate_random_number(&srd_bd_addr[0]);
+    if (ret)
+    {
+        return ret;
+    }
+
+    /* The two upper bits shall be set to 1 */
+    srd_bd_addr[1] |= 0xC000;
+
+    handle->srd_bd_addr[5] = (uint8_t)(srd_bd_addr[1] >> 8);
+    handle->srd_bd_addr[4] = (uint8_t)(srd_bd_addr[1] >> 0);
+    handle->srd_bd_addr[3] = (uint8_t)(srd_bd_addr[0] >> 24);
+    handle->srd_bd_addr[2] = (uint8_t)(srd_bd_addr[0] >> 16);
+    handle->srd_bd_addr[1] = (uint8_t)(srd_bd_addr[0] >> 8);
+    handle->srd_bd_addr[0] = (uint8_t)(srd_bd_addr[0] >> 0);
+
+    return 0;
+}
+#endif
+
 const uint8_t* ble_get_public_bd_addr(void)
 {
     return hci_manager_handle.bd_addr;
@@ -182,7 +218,7 @@ static int32_t hci_tl_gap_gatt_init(void)
         return -EIO;
     }
 
-    hci_tl_generate_bd_addr(&hci_manager_handle);
+    hci_tl_generate_public_bd_addr(&hci_manager_handle);
 
     hci_info("Get public address: %02x:%02x:%02x:%02x:%02x:%02x",
              hci_manager_handle.bd_addr[5],
@@ -206,7 +242,29 @@ static int32_t hci_tl_gap_gatt_init(void)
         return -EIO;
     }
 
-    /* TBD: Remove the random address. */
+#if CONFIG_GAP_ADDRESS_TYPE != GAP_PUBLIC_ADDR
+    hci_tl_generate_random_bd_addr(&hci_manager_handle);
+
+    hci_info("Get random address: %02x:%02x:%02x:%02x:%02x:%02x",
+             hci_manager_handle.srd_bd_addr[5],
+             hci_manager_handle.srd_bd_addr[4],
+             hci_manager_handle.srd_bd_addr[3],
+             hci_manager_handle.srd_bd_addr[2],
+             hci_manager_handle.srd_bd_addr[1],
+             hci_manager_handle.srd_bd_addr[0]);
+
+    status = aci_hal_write_config_data(CONFIG_DATA_RANDOM_ADDRESS_OFFSET,
+                                       CONFIG_DATA_RANDOM_ADDRESS_LEN,
+                                       hci_manager_handle.srd_bd_addr);
+    if (status != BLE_STATUS_SUCCESS)
+    {
+        hci_error("Write config data failed, offset %d, len %d, status %d.",
+                  CONFIG_DATA_RANDOM_ADDRESS_OFFSET,
+                  CONFIG_DATA_RANDOM_ADDRESS_LEN,
+                  status);
+        return -EIO;
+    }
+#endif
 
     status = aci_hal_write_config_data(CONFIG_DATA_IR_OFFSET,
                                        CONFIG_DATA_IR_LEN,

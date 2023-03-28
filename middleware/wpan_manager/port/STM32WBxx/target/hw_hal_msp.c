@@ -1,15 +1,6 @@
 #include "wpan_app_common.h"
 
 /**
- * Initializes the Global MSP.
- */
-void HAL_MspInit(void)
-{
-    HAL_NVIC_SetPriority(HSEM_IRQn, 5, 0);
-    HAL_NVIC_EnableIRQ(HSEM_IRQn);
-}
-
-/**
  * @brief IPCC MSP Initialization
  * This function configures the hardware resources used in this example
  * @param hipcc: IPCC handle pointer
@@ -42,47 +33,6 @@ void HAL_IPCC_MspDeInit(IPCC_HandleTypeDef* hipcc)
 
         HAL_NVIC_DisableIRQ(IPCC_C1_RX_IRQn);
         HAL_NVIC_DisableIRQ(IPCC_C1_TX_IRQn);
-    }
-}
-
-/**
- * @brief RNG MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hrng: RNG handle pointer
- * @retval None
- */
-void HAL_RNG_MspInit(RNG_HandleTypeDef* hrng)
-{
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-
-    if (hrng->Instance == RNG)
-    {
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RNG;
-        PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_HSI48;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            while (1)
-            {
-                ;
-            }
-        }
-
-        __HAL_RCC_RNG_CLK_ENABLE();
-    }
-}
-
-/**
- * @brief RNG MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hrng: RNG handle pointer
- * @retval None
- */
-void HAL_RNG_MspDeInit(RNG_HandleTypeDef* hrng)
-{
-    if (hrng->Instance == RNG)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_RNG_CLK_DISABLE();
     }
 }
 

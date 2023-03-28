@@ -96,6 +96,9 @@
 #define CONFIG_ADC_MANAGER_LABEL adc_manager
 #define CONFIG_ADC_MANAGER_TIMER_NAME "adc manager timer"
 
+#define CONFIG_RNG_MANAGER_NAME "rng manager"
+#define CONFIG_RNG_MANAGER_LABEL rng_manager
+
 #define CONFIG_SHCI_MANAGER_NAME  "shci manager"
 #define CONFIG_SHCI_MANAGER_LABEL shci_manager
 

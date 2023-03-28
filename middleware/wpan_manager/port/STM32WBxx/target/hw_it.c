@@ -44,12 +44,3 @@ void IPCC_C1_TX_IRQHandler(void)
 {
     HAL_IPCC_TX_IRQHandler(&hipcc);
 }
-
-/* TBD: */
-/**
- * @brief This function handles HSEM global interrupt.
- */
-void HSEM_IRQHandler(void)
-{
-    HAL_HSEM_IRQHandler();
-}

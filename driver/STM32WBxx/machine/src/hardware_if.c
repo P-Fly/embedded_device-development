@@ -27,7 +27,6 @@ IPCC_HandleTypeDef hipcc;
 #if 0
 RTC_HandleTypeDef hrtc;
 #endif
-RNG_HandleTypeDef hrng;
 
 static void Config_HSE(void);
 static void Reset_Device(void);
@@ -50,7 +49,6 @@ static void hardware_ipcc_config(void);
 #if 0
 static void hardware_rtc_config(void);
 #endif
-static void hardware_rng_config(void);
 
 #define CONFIG_CPU_NAME   "STM32WBxx"
 #define CONFIG_BOARD_NAME "P-NUCLEO-WB55"
@@ -79,8 +77,6 @@ void hardware_early_startup(void)
 #if 0
     hardware_rtc_config();
 #endif
-
-    hardware_rng_config();
 
     hardware_appe_init();
 }
@@ -156,7 +152,6 @@ static void hardware_clk_enable(void)
     __HAL_RCC_DMA2_CLK_ENABLE();
     __HAL_RCC_IPCC_CLK_ENABLE();
     __HAL_RCC_CRC_CLK_ENABLE();
-    __HAL_RCC_HSEM_CLK_ENABLE();
     __HAL_RCC_RNG_CLK_ENABLE();
     __HAL_RCC_RTC_ENABLE();
     __HAL_RCC_RTCAPB_CLK_ENABLE();
@@ -353,13 +348,15 @@ static void hardware_periph_clock_config(void)
                                                RCC_PERIPHCLK_RFWAKEUP |
                                                RCC_PERIPHCLK_RTC |
                                                RCC_PERIPHCLK_USART1 |
-                                               RCC_PERIPHCLK_LPUART1;
+                                               RCC_PERIPHCLK_LPUART1 |
+                                               RCC_PERIPHCLK_RNG;
     PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
     PeriphClkInitStruct.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_PCLK1;
     PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
     PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSE;
     PeriphClkInitStruct.SmpsClockSelection = RCC_SMPSCLKSOURCE_HSE;
     PeriphClkInitStruct.SmpsDivSelection = RCC_SMPSCLKDIV_RANGE1;
+    PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_HSI48;
 
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
@@ -414,20 +411,6 @@ static void hardware_rtc_config(void)
     }
 }
 #endif
-
-/* TBD: */
-static void hardware_rng_config(void)
-{
-    hrng.Instance = RNG;
-    hrng.Init.ClockErrorDetection = RNG_CED_ENABLE;
-    if (HAL_RNG_Init(&hrng) != HAL_OK)
-    {
-        while (1)
-        {
-            ;
-        }
-    }
-}
 
 /* TBD: */
 static void hardware_appe_init(void)

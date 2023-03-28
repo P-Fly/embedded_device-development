@@ -10,4 +10,6 @@
 #include "hci_tl.h"
 #include "otp.h"
 
+#define CONFIG_GAP_ADDRESS_TYPE GAP_STATIC_RANDOM_ADDR
+
 #endif /* __WPAN_CONF_H__ */

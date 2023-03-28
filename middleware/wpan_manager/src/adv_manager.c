@@ -86,7 +86,7 @@ static void adv_timer_callback(void* argument)
 
 int32_t adv_init(adv_user_clbk_t user_clbk, const void* user_ctx)
 {
-    const uint8_t* p_bd_addr = ble_get_public_bd_addr();
+    const uint8_t* bd_addr;
 
     if (user_clbk == NULL)
     {
@@ -96,12 +96,25 @@ int32_t adv_init(adv_user_clbk_t user_clbk, const void* user_ctx)
     adv_manager_handle.user_clbk = user_clbk;
     adv_manager_handle.user_ctx = user_ctx;
 
-    adv_manuf_data[sizeof(adv_manuf_data) - 6] = p_bd_addr[5];
-    adv_manuf_data[sizeof(adv_manuf_data) - 5] = p_bd_addr[4];
-    adv_manuf_data[sizeof(adv_manuf_data) - 4] = p_bd_addr[3];
-    adv_manuf_data[sizeof(adv_manuf_data) - 3] = p_bd_addr[2];
-    adv_manuf_data[sizeof(adv_manuf_data) - 2] = p_bd_addr[1];
-    adv_manuf_data[sizeof(adv_manuf_data) - 1] = p_bd_addr[0];
+#if CONFIG_GAP_ADDRESS_TYPE != GAP_PUBLIC_ADDR
+    bd_addr = ble_get_random_bd_addr();
+
+    adv_manuf_data[sizeof(adv_manuf_data) - 6] = bd_addr[5];
+    adv_manuf_data[sizeof(adv_manuf_data) - 5] = bd_addr[4];
+    adv_manuf_data[sizeof(adv_manuf_data) - 4] = bd_addr[3];
+    adv_manuf_data[sizeof(adv_manuf_data) - 3] = bd_addr[2];
+    adv_manuf_data[sizeof(adv_manuf_data) - 2] = bd_addr[1];
+    adv_manuf_data[sizeof(adv_manuf_data) - 1] = bd_addr[0];
+#else
+    bd_addr = ble_get_public_bd_addr();
+
+    adv_manuf_data[sizeof(adv_manuf_data) - 6] = bd_addr[5];
+    adv_manuf_data[sizeof(adv_manuf_data) - 5] = bd_addr[4];
+    adv_manuf_data[sizeof(adv_manuf_data) - 4] = bd_addr[3];
+    adv_manuf_data[sizeof(adv_manuf_data) - 3] = bd_addr[2];
+    adv_manuf_data[sizeof(adv_manuf_data) - 2] = bd_addr[1];
+    adv_manuf_data[sizeof(adv_manuf_data) - 1] = bd_addr[0];
+#endif
 
     adv_info("Initialize advertisement succeed.");
 
@@ -153,7 +166,7 @@ int32_t adv_setup(adv_state_e state)
     status = aci_gap_set_discoverable(ADV_IND,
                                       Min_Inter,
                                       Max_Inter,
-                                      CFG_BLE_ADDRESS_TYPE,
+                                      CONFIG_GAP_ADDRESS_TYPE,
                                       NO_WHITE_LIST_USE,
                                       sizeof(adv_local_name),
                                       (uint8_t*)adv_local_name,
