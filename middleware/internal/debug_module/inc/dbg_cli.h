@@ -16,10 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __DBG_TRACE_H__
-#define __DBG_TRACE_H__
+#ifndef __DBG_CLI_H__
+#define __DBG_CLI_H__
 
-extern int32_t dbg_trace_output(const char* format, ...);
-extern uint32_t dbg_trace_get_tick(void);
+typedef void (* dbg_cli_input_user_clbk_t)(const void* user_ctx);
 
-#endif /* __DBG_TRACE_H__ */
+extern int32_t dbg_cli_input_register_user_clbk(
+    dbg_cli_input_user_clbk_t   user_clbk,
+    const void*                 user_ctx);
+extern void dbg_cli_input_unregister_user_clbk(void);
+extern const char* dbg_cli_input_get(void);
+extern void dbg_cli_input_free(void);
+extern int32_t dbg_cli_input_enable(uint32_t enable_disable);
+extern void dbg_cli_input_driver_clbk(char ch);
+extern int32_t dbg_cli_output(const char* format, ...);
+extern uint32_t dbg_cli_get_tick(void);
+
+#endif /* __DBG_CLI_H__ */

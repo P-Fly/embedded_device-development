@@ -39,6 +39,11 @@ static inline int32_t dbg_uart_write(const void* tx_buf, int32_t tx_len)
     return stm32wbxx_uart1_write(tx_buf, tx_len);
 }
 
+static inline int32_t dbg_uart_read_clbk_enable(uint32_t enable_disable)
+{
+    return stm32wbxx_uart1_read_clbk_enable(enable_disable);
+}
+
 static inline uint32_t dbg_get_tick(void)
 {
     return HAL_GetTick();

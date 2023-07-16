@@ -22,6 +22,7 @@
 #include "cmsis_os.h"
 #include "ring_buff.h"
 #include "middleware_conf.h"
+#include "dbg_cli.h"
 #include "stm32wbxx.h"
 #include "stm32wbxx_uart.h"
 
@@ -33,12 +34,31 @@ typedef struct
     UART_HandleTypeDef  uart;
 
     ring_buff_t         tx;
-    ring_buff_t         rx;
     char                tx_ring_buff[CONFIG_UART1_TX_RING_BUFF_SIZE];
-    char                rx_ring_buff[CONFIG_UART1_RX_RING_BUFF_SIZE];
 } stm32wbxx_uart_handle_t;
 
 static stm32wbxx_uart_handle_t stm32wbxx_uart_handle;
+
+/**
+ * @brief   Enable or disable uart read request.
+ *
+ * @param   enable_disable Enable or disable.
+ *
+ * @retval  Returns 0 on success, negative error code otherwise.
+ */
+int32_t stm32wbxx_uart1_read_clbk_enable(uint32_t enable_disable)
+{
+    if (enable_disable == 0)
+    {
+        __HAL_UART_DISABLE_IT(&stm32wbxx_uart_handle.uart, UART_IT_RXNE);
+    }
+    else
+    {
+        __HAL_UART_ENABLE_IT(&stm32wbxx_uart_handle.uart, UART_IT_RXNE);
+    }
+
+    return 0;
+}
 
 /**
  * @brief   Write data to uart.
@@ -101,43 +121,6 @@ int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len)
 }
 
 /**
- * @brief   Read data from uart.
- *
- * @param   rx_buf Pointer to data buffer to read.
- * @param   rx_len Data length to read.
- *
- * @retval  The number of data bytes read from the slave on success,
- *          negative error code otherwise.
- */
-int32_t stm32wbxx_uart1_read(void* rx_buf, int32_t rx_len)
-{
-    char* buff = (char*)rx_buf;
-    int32_t i;
-    int32_t ret;
-
-    if (!rx_buf)
-    {
-        return -EINVAL;
-    }
-
-    if (rx_len <= 0)
-    {
-        return -EINVAL;
-    }
-
-    for (i = 0; i < rx_len; i++)
-    {
-        ret = ring_buffer_read(&stm32wbxx_uart_handle.rx, &buff[i]);
-        if (ret)
-        {
-            break;
-        }
-    }
-
-    return i;
-}
-
-/**
  * @brief   Handles uart interrupt request.
  *
  * @param   handle Pointer to the uart driver handle.
@@ -173,9 +156,9 @@ static void stm32wbxx_uart1_irq_handler(stm32wbxx_uart_handle_t* handle)
     {
         if (__HAL_UART_GET_FLAG(&handle->uart, UART_FLAG_RXNE))
         {
-            value = handle->uart.Instance->TDR;
+            value = handle->uart.Instance->RDR;
 
-            (void)ring_buffer_write(&handle->rx, value);
+            dbg_cli_input_driver_clbk(value);
         }
     }
 }
@@ -275,15 +258,6 @@ int32_t stm32wbxx_uart1_init(void)
         ring_buffer_init(&stm32wbxx_uart_handle.tx,
                          stm32wbxx_uart_handle.tx_ring_buff,
                          sizeof(stm32wbxx_uart_handle.tx_ring_buff));
-    if (ret)
-    {
-        return ret;
-    }
-
-    ret =
-        ring_buffer_init(&stm32wbxx_uart_handle.rx,
-                         stm32wbxx_uart_handle.rx_ring_buff,
-                         sizeof(stm32wbxx_uart_handle.rx_ring_buff));
     if (ret)
     {
         return ret;

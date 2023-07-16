@@ -19,6 +19,9 @@
 #ifndef __FRAMEWORK_CONF__
 #define __FRAMEWORK_CONF__
 
+#define CONFIG_CPU_NAME   "STM32WBxx"
+#define CONFIG_BOARD_NAME "P-NUCLEO-WB55"
+
 #define CONFIG_INIT_THREAD_NAME "init thread"
 #define CONFIG_INIT_THREAD_STACK_SIZE 1024
 #define CONFIG_INIT_THREAD_PRIORITY osPriorityRealtime
@@ -48,6 +51,14 @@
 #define CONFIG_BLE_SERVICE_THREAD_PRIORITY osPriorityNormal
 #define CONFIG_BLE_SERVICE_QUEUE_NAME "ble queue"
 #define CONFIG_BLE_SERVICE_MSG_COUNT 10
+
+#define CONFIG_MMI_SERVICE_NAME "mmi service"
+#define CONFIG_MMI_SERVICE_LABEL mmi_service
+#define CONFIG_MMI_SERVICE_THREAD_NAME "mmi thread"
+#define CONFIG_MMI_SERVICE_THREAD_STACK_SIZE 2048
+#define CONFIG_MMI_SERVICE_THREAD_PRIORITY osPriorityNormal
+#define CONFIG_MMI_SERVICE_QUEUE_NAME "mmi queue"
+#define CONFIG_MMI_SERVICE_MSG_COUNT 10
 
 #define CONFIG_UI_SERVICE_NAME "ui service"
 #define CONFIG_UI_SERVICE_LABEL ui_service
@@ -85,8 +96,9 @@
 #define CONFIG_CLOCK_MANAGER_NAME "sys manager"
 #define CONFIG_CLOCK_MANAGER_LABEL sys_manager
 
-#define CONFIG_DBG_TRACE_NAME "dbg"
-#define CONFIG_DBG_TRACE_LABEL dbg_trace_module
-#define CONFIG_DBG_TRACE_MAX_LEN 256
+#define CONFIG_DBG_CLI_NAME "dbg cli"
+#define CONFIG_DBG_CLI_LABEL dbg_cli
+#define CONFIG_DBG_CLI_OUTPUT_BUFF_SIZE 256
+#define CONFIG_DBG_CLI_INPUT_BUFF_SIZE 128
 
 #endif /* __FRAMEWORK_CONF__ */

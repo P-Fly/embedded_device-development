@@ -21,7 +21,6 @@
 #include "cmsis_version.h"
 #include "cmsis_os.h"
 #include "framework.h"
-#include "middleware_conf.h"
 #include "stm32wbxx.h"
 
 static void hardware_print_info(void);

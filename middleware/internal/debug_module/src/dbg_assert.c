@@ -99,10 +99,10 @@ void __aeabi_assert(const char* expr, const char* file, int line)
         line /= 10;
     }
 
-    (void)dbg_trace_output("assertion failed: %s, file %s, line %s\r\n",
-                           expr,
-                           get_file_name(file),
-                           p);
+    (void)dbg_cli_output("assertion failed: %s, file %s, line %s\r\n",
+                         expr,
+                         get_file_name(file),
+                         p);
 
     abort();
 }

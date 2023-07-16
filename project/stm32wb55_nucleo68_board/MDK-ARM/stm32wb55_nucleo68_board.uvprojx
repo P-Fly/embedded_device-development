@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4,__ASSERT_MSG,USE_FULL_ASSERT</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\framework\base\inc;..\..\..\middleware\external\FreeRTOS-Kernel\CMSIS_RTOS_V2;..\..\..\middleware\external\FreeRTOS-Kernel\include;..\..\..\middleware\external\FreeRTOS-Kernel\portable\RVDS\ARM_CM4F;..\..\..\middleware\internal\clock_manager\inc;..\..\..\middleware\internal\clock_manager\port\STM32WBxx;..\..\..\middleware\internal\debug_module\inc;..\..\..\middleware\internal\debug_module\port\STM32WBxx;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\utils\ring_buff\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\framework\base\inc;..\..\..\framework\services\mmi_service\inc;..\..\..\middleware\external\FreeRTOS-Kernel\CMSIS_RTOS_V2;..\..\..\middleware\external\FreeRTOS-Kernel\include;..\..\..\middleware\external\FreeRTOS-Kernel\portable\RVDS\ARM_CM4F;..\..\..\middleware\external\FreeRTOS-Plus-CLI;..\..\..\middleware\internal\clock_manager\inc;..\..\..\middleware\internal\clock_manager\port\STM32WBxx;..\..\..\middleware\internal\debug_module\inc;..\..\..\middleware\internal\debug_module\port\STM32WBxx;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\utils\ring_buff\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -404,6 +404,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>framework\services\mmi_service</GroupName>
+          <Files>
+            <File>
+              <FileName>mmi_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\services\mmi_service\src\mmi_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>middleware\external\FreeRTOS-Kernel</GroupName>
           <Files>
             <File>
@@ -464,6 +474,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>middleware\external\FreeRTOS-Plus-CLI</GroupName>
+          <Files>
+            <File>
+              <FileName>FreeRTOS_CLI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\FreeRTOS-Plus-CLI\FreeRTOS_CLI.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>middleware\internal\clock_manager</GroupName>
           <Files>
             <File>
@@ -482,9 +502,9 @@
           <GroupName>middleware\internal\debug_module</GroupName>
           <Files>
             <File>
-              <FileName>dbg_trace.c</FileName>
+              <FileName>dbg_cli.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\middleware\internal\debug_module\src\dbg_trace.c</FilePath>
+              <FilePath>..\..\..\middleware\internal\debug_module\src\dbg_cli.c</FilePath>
             </File>
             <File>
               <FileName>dbg_assert.c</FileName>

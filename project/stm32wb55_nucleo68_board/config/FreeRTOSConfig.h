@@ -148,5 +148,8 @@ header file. */
 /* IMPORTANT: After 10.3.1 update, Systick_Handler comes from NVIC (if SYS timebase = systick), otherwise from cmsis_os2.c */
 #define USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION 0
 
+/* Defines the macro of the FreeRTOS-Plus-CLI depends. */
+#define configCOMMAND_INT_MAX_OUTPUT_SIZE 256
+
 #endif /* FREERTOS_CONFIG_H */
 

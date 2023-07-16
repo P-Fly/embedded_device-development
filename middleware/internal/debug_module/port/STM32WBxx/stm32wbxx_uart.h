@@ -25,6 +25,6 @@
 extern int32_t stm32wbxx_uart1_init(void);
 extern int32_t stm32wbxx_uart1_deinit(void);
 extern int32_t stm32wbxx_uart1_write(const void* tx_buf, int32_t tx_len);
-extern int32_t stm32wbxx_uart1_read(void* rx_buf, int32_t rx_len);
+extern int32_t stm32wbxx_uart1_read_clbk_enable(uint32_t enable_disable);
 
 #endif /* __STM32WBXX_UART_H__ */

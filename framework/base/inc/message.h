@@ -36,6 +36,7 @@ typedef struct
 #define MSG_ID_LED_BASE     0x00000200
 #define MSG_ID_BTN_BASE     0x00000300
 #define MSG_ID_BLE_BASE     0x00000400
+#define MSG_ID_MMI_BASE     0x00000500
 
 /**
  * @brief           Notify system startup is completed.
@@ -49,28 +50,6 @@ typedef struct
 #define MSG_ID_SYS_STARTUP_COMPLETED (MSG_ID_SYS_BASE | 0x01)
 
 /**
- * @brief           Disable LED.
- *
- * @message.id      MSG_ID_LED_DISABLE
- * @message.param0  None.
- * @message.param1  None.
- * @message.param2  None.
- * @message.param3  None.
- */
-#define MSG_ID_LED_DISABLE (MSG_ID_LED_BASE | 0x00)
-
-/**
- * @brief           Enable LED.
- *
- * @message.id      MSG_ID_LED_ENABLE
- * @message.param0  None.
- * @message.param1  None.
- * @message.param2  None.
- * @message.param3  None.
- */
-#define MSG_ID_LED_ENABLE (MSG_ID_LED_BASE | 0x01)
-
-/**
  * @brief           Set LED type.
  *
  * @message.id      MSG_ID_LED_SETUP
@@ -79,29 +58,7 @@ typedef struct
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_LED_SETUP (MSG_ID_LED_BASE | 0x02)
-
-/**
- * @brief           Disable button.
- *
- * @message.id      MSG_ID_BTN_DISABLE
- * @message.param0  None.
- * @message.param1  None.
- * @message.param2  None.
- * @message.param3  None.
- */
-#define MSG_ID_BTN_DISABLE (MSG_ID_BTN_BASE | 0x00)
-
-/**
- * @brief           Enable button.
- *
- * @message.id      MSG_ID_BTN_ENABLE
- * @message.param0  None.
- * @message.param1  None.
- * @message.param2  None.
- * @message.param3  None.
- */
-#define MSG_ID_BTN_ENABLE (MSG_ID_BTN_BASE | 0x01)
+#define MSG_ID_LED_SETUP (MSG_ID_LED_BASE | 0x01)
 
 /**
  * @brief           Notify button state.
@@ -112,29 +69,7 @@ typedef struct
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_BTN_NOTIFY (MSG_ID_BTN_BASE | 0x02)
-
-/**
- * @brief           Disable BLE.
- *
- * @message.id      MSG_ID_BLE_DISABLE
- * @message.param0  None.
- * @message.param1  None.
- * @message.param2  None.
- * @message.param3  None.
- */
-#define MSG_ID_BLE_DISABLE (MSG_ID_BLE_BASE | 0x00)
-
-/**
- * @brief           Enable BLE.
- *
- * @message.id      MSG_ID_BLE_ENABLE
- * @message.param0  None.
- * @message.param1  None.
- * @message.param2  None.
- * @message.param3  None.
- */
-#define MSG_ID_BLE_ENABLE (MSG_ID_BLE_BASE | 0x01)
+#define MSG_ID_BTN_NOTIFY (MSG_ID_BTN_BASE | 0x01)
 
 /**
  * @brief           Notify BLE SHCI ready.
@@ -145,7 +80,7 @@ typedef struct
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_BLE_SHCI_READY (MSG_ID_BLE_BASE | 0x02)
+#define MSG_ID_BLE_SHCI_READY (MSG_ID_BLE_BASE | 0x01)
 
 /**
  * @brief           Notify BLE ADV timeout.
@@ -156,7 +91,7 @@ typedef struct
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_BLE_ADV_TIMEOUT (MSG_ID_BLE_BASE | 0x03)
+#define MSG_ID_BLE_ADV_TIMEOUT (MSG_ID_BLE_BASE | 0x02)
 
 /**
  * @brief           Notify BLE HCI connected.
@@ -167,7 +102,7 @@ typedef struct
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_BLE_HCI_CONNECTED (MSG_ID_BLE_BASE | 0x04)
+#define MSG_ID_BLE_HCI_CONNECTED (MSG_ID_BLE_BASE | 0x03)
 
 /**
  * @brief           Notify BLE HCI disconnected.
@@ -178,7 +113,18 @@ typedef struct
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_BLE_HCI_DISCONNECTED (MSG_ID_BLE_BASE | 0x05)
+#define MSG_ID_BLE_HCI_DISCONNECTED (MSG_ID_BLE_BASE | 0x04)
+
+/**
+ * @brief           Notify client input is completed.
+ *
+ * @message.id      MSG_ID_MMI_CLIENT_INPUT_NOTIFY
+ * @message.param0  mmi_cli_type_e.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_MMI_CLIENT_INPUT_NOTIFY (MSG_ID_MMI_BASE | 0x01)
 
 extern const char* msg_id_to_name(uint32_t id);
 extern int32_t msg_sys_startup_completed(void);

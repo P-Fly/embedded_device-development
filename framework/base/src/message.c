@@ -28,19 +28,14 @@ typedef struct
 
 static const msg_id_recorder_t msg_id_recorder[] =
 {
-    { MSG_ID_SYS_STARTUP_COMPLETED, "SYS_STARTUP_COMPLETED" },
-    { MSG_ID_LED_DISABLE,           "LED_DISABLE"           },
-    { MSG_ID_LED_ENABLE,            "LED_ENABLE"            },
-    { MSG_ID_LED_SETUP,             "LED_SETUP"             },
-    { MSG_ID_BTN_DISABLE,           "BTN_DISABLE"           },
-    { MSG_ID_BTN_ENABLE,            "BTN_ENABLE"            },
-    { MSG_ID_BTN_NOTIFY,            "BTN_NOTIFY"            },
-    { MSG_ID_BLE_DISABLE,           "BLE_DISABLE"           },
-    { MSG_ID_BLE_ENABLE,            "BLE_ENABLE"            },
-    { MSG_ID_BLE_SHCI_READY,        "BLE_SHCI_READY"        },
-    { MSG_ID_BLE_ADV_TIMEOUT,       "BLE_ADV_TIMEOUT"       },
-    { MSG_ID_BLE_HCI_CONNECTED,     "BLE_HCI_CONNECTED"     },
-    { MSG_ID_BLE_HCI_DISCONNECTED,  "BLE_HCI_DISCONNECTED"  },
+    { MSG_ID_SYS_STARTUP_COMPLETED,   "SYS_STARTUP_COMPLETED"   },
+    { MSG_ID_LED_SETUP,               "LED_SETUP"               },
+    { MSG_ID_BTN_NOTIFY,              "BTN_NOTIFY"              },
+    { MSG_ID_BLE_SHCI_READY,          "BLE_SHCI_READY"          },
+    { MSG_ID_BLE_ADV_TIMEOUT,         "BLE_ADV_TIMEOUT"         },
+    { MSG_ID_BLE_HCI_CONNECTED,       "BLE_HCI_CONNECTED"       },
+    { MSG_ID_BLE_HCI_DISCONNECTED,    "BLE_HCI_DISCONNECTED"    },
+    { MSG_ID_MMI_CLIENT_INPUT_NOTIFY, "MMI_CLIENT_INPUT_NOTIFY" },
 };
 
 const char* msg_id_to_name(uint32_t id)
