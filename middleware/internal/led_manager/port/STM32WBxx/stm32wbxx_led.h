@@ -16,13 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __STM32WBXX_CLOCK_H__
-#define __STM32WBXX_CLOCK_H__
+#ifndef __STM32WBXX_LED_H__
+#define __STM32WBXX_LED_H__
 
 #include <stddef.h>
 #include <stdint.h>
+#include "led_manager.h"
 
-extern int32_t stm32wbxx_clock_init(void);
-extern int32_t stm32wbxx_clock_deinit(void);
+extern int32_t stm32wbxx_led_init(void);
+extern int32_t stm32wbxx_led_deinit(void);
+extern int32_t stm32wbxx_led_on(led_id_e id);
+extern int32_t stm32wbxx_led_off(led_id_e id);
+extern int32_t stm32wbxx_led_toggle(led_id_e id);
 
-#endif /* __STM32WBXX_CLOCK_H__ */
+#endif /* __STM32WBXX_LED_H__ */

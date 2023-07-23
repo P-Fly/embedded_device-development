@@ -19,6 +19,9 @@
 #ifndef __MMI_SERVICE_H__
 #define __MMI_SERVICE_H__
 
+#include "cmsis_os.h"
+#include "FreeRTOS_CLI.h"
+
 /**
  * @brief   Man-machine client type.
  */

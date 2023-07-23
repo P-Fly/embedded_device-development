@@ -16,13 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __STM32WBXX_CLOCK_H__
-#define __STM32WBXX_CLOCK_H__
+#ifndef __LED_MANAGER_H__
+#define __LED_MANAGER_H__
 
-#include <stddef.h>
-#include <stdint.h>
+typedef enum
+{
+    LED_TYPE_TURN_OFF = 0,
+    LED_TYPE_TURN_ON,
+    LED_TYPE_QUICK_FLASH,
+    LED_TYPE_SLOW_FLASH,
 
-extern int32_t stm32wbxx_clock_init(void);
-extern int32_t stm32wbxx_clock_deinit(void);
+    LED_TYPE_BUTT,
+} led_type_e;
 
-#endif /* __STM32WBXX_CLOCK_H__ */
+typedef enum
+{
+    LED_ID_1 = 0,
+    LED_ID_2,
+    LED_ID_3,
+
+    LED_ID_BUTT,
+} led_id_e;
+
+extern int32_t led_manager_setup(led_id_e id, led_type_e type);
+extern const char* led_manager_type_to_str(led_type_e type);
+
+#endif /* __LED_MANAGER_H__ */

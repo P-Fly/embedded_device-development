@@ -20,11 +20,12 @@
 #include <stdint.h>
 #include <string.h>
 #include "cmsis_os.h"
+#include "err.h"
 #include "ring_buff.h"
-#include "middleware_conf.h"
 #include "dbg_cli.h"
 #include "stm32wbxx.h"
 #include "stm32wbxx_uart.h"
+#include "middleware_conf.h"
 
 /**
  * @brief   Uart handle definition.

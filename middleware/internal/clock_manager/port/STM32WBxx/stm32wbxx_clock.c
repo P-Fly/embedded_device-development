@@ -20,9 +20,11 @@
 #include <stdint.h>
 #include <string.h>
 #include "cmsis_os.h"
+#include "err.h"
 #include "clock_manager.h"
 #include "stm32wbxx.h"
 #include "stm32wbxx_clock.h"
+#include "middleware_conf.h"
 
 /**
  * @brief   Clock handle definition.

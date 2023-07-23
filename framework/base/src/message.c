@@ -24,9 +24,9 @@ typedef struct
 {
     uint32_t    id;
     const char* name;
-} msg_id_recorder_t;
+} msg_id_str_mapping_t;
 
-static const msg_id_recorder_t msg_id_recorder[] =
+static const msg_id_str_mapping_t msg_id_str_mapping[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED,   "SYS_STARTUP_COMPLETED"   },
     { MSG_ID_LED_SETUP,               "LED_SETUP"               },
@@ -38,15 +38,15 @@ static const msg_id_recorder_t msg_id_recorder[] =
     { MSG_ID_MMI_CLIENT_INPUT_NOTIFY, "MMI_CLIENT_INPUT_NOTIFY" },
 };
 
-const char* msg_id_to_name(uint32_t id)
+const char* msg_id_to_str(uint32_t id)
 {
     uint32_t i;
 
-    for (i = 0; i < sizeof(msg_id_recorder) / sizeof(msg_id_recorder[0]); i++)
+    for (i = 0; i < sizeof(msg_id_str_mapping) / sizeof(msg_id_str_mapping[0]); i++)
     {
-        if (msg_id_recorder[i].id == id)
+        if (msg_id_str_mapping[i].id == id)
         {
-            return msg_id_recorder[i].name;
+            return msg_id_str_mapping[i].name;
         }
     }
 

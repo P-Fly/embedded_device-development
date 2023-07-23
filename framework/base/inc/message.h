@@ -126,7 +126,7 @@ typedef struct
  */
 #define MSG_ID_MMI_CLIENT_INPUT_NOTIFY (MSG_ID_MMI_BASE | 0x01)
 
-extern const char* msg_id_to_name(uint32_t id);
+extern const char* msg_id_to_str(uint32_t id);
 extern int32_t msg_sys_startup_completed(void);
 
 #endif /* __MESSAGE_H__ */

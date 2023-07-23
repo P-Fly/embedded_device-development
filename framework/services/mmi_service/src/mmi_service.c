@@ -177,7 +177,7 @@ static void mmi_service_message_handler(const object*           obj,
 
     mmi_debug("Service <%s> Received %s(0x%x): 0x%x, 0x%x, 0x%x, 0x%x.",
               obj->name,
-              msg_id_to_name(message->id),
+              msg_id_to_str(message->id),
               message->id,
               message->param0,
               message->param1,
@@ -265,6 +265,7 @@ DECLARE_SERVICE(CONFIG_MMI_SERVICE_NAME,
                 mmi_service_deinit,
                 mmi_service_message_handler);
 
+#ifdef CONFIG_MMI_SERVICE_INTERNAL_COMMAND_ENABLE
 static BaseType_t mmi_command_version(char*         output,
                                       size_t        output_size,
                                       const char*   input)
@@ -286,3 +287,4 @@ DECLARE_MMI_COMMAND("version",
                     "\r\nversion:\r\n Print certain system version.\r\n",
                     mmi_command_version,
                     0);
+#endif

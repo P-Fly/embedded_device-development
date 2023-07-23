@@ -314,7 +314,7 @@ int32_t service_broadcast_message(const message_t* message)
             if (stat != osOK)
             {
                 pr_error("Broadcast %s(0x%x) failed, stat %d.",
-                         msg_id_to_name(message->id),
+                         msg_id_to_str(message->id),
                          message->id,
                          stat);
 
@@ -333,7 +333,7 @@ int32_t service_broadcast_message(const message_t* message)
     }
 
     pr_info("Broadcast %s(0x%x) succeed, 0x%x, 0x%x, 0x%x, 0x%x.",
-            msg_id_to_name(message->id),
+            msg_id_to_str(message->id),
             message->id,
             message->param0,
             message->param1,
