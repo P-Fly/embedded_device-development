@@ -63,13 +63,13 @@ typedef struct
 /**
  * @brief           Notify button state.
  *
- * @message.id      MSG_ID_BTN_NOTIFY
+ * @message.id      MSG_ID_BTN_STATE_NOTIFY
  * @message.param0  button_id_e.
  * @message.param1  button_state_e.
  * @message.param2  None.
  * @message.param3  None.
  */
-#define MSG_ID_BTN_NOTIFY (MSG_ID_BTN_BASE | 0x01)
+#define MSG_ID_BTN_STATE_NOTIFY (MSG_ID_BTN_BASE | 0x01)
 
 /**
  * @brief           Notify BLE SHCI ready.

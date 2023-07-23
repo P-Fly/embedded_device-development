@@ -30,7 +30,7 @@ static const msg_id_str_mapping_t msg_id_str_mapping[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED,   "SYS_STARTUP_COMPLETED"   },
     { MSG_ID_LED_SETUP,               "LED_SETUP"               },
-    { MSG_ID_BTN_NOTIFY,              "BTN_NOTIFY"              },
+    { MSG_ID_BTN_STATE_NOTIFY,        "BTN_STATE_NOTIFY"        },
     { MSG_ID_BLE_SHCI_READY,          "BLE_SHCI_READY"          },
     { MSG_ID_BLE_ADV_TIMEOUT,         "BLE_ADV_TIMEOUT"         },
     { MSG_ID_BLE_HCI_CONNECTED,       "BLE_HCI_CONNECTED"       },

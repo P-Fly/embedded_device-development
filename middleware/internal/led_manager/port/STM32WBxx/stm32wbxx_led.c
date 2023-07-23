@@ -67,7 +67,7 @@ static const stm32wbxx_led_hw_config_t stm32wbxx_led_hw_config[] =
 int32_t stm32wbxx_led_init(void)
 {
     GPIO_InitTypeDef led;
-    int32_t i;
+    uint32_t i;
 
     for (i = 0;
          i <
@@ -96,7 +96,7 @@ int32_t stm32wbxx_led_init(void)
  */
 int32_t stm32wbxx_led_deinit(void)
 {
-    int32_t i;
+    uint32_t i;
 
     for (i = 0;
          i <
@@ -122,7 +122,7 @@ int32_t stm32wbxx_led_deinit(void)
  */
 int32_t stm32wbxx_led_on(led_id_e id)
 {
-    int32_t i;
+    uint32_t i;
 
     for (i = 0;
          i <
@@ -151,7 +151,7 @@ int32_t stm32wbxx_led_on(led_id_e id)
  */
 int32_t stm32wbxx_led_off(led_id_e id)
 {
-    int32_t i;
+    uint32_t i;
 
     for (i = 0;
          i <
@@ -180,7 +180,7 @@ int32_t stm32wbxx_led_off(led_id_e id)
  */
 int32_t stm32wbxx_led_toggle(led_id_e id)
 {
-    int32_t i;
+    uint32_t i;
 
     for (i = 0;
          i <
