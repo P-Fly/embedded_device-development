@@ -50,6 +50,17 @@ typedef struct
 #define MSG_ID_SYS_STARTUP_COMPLETED (MSG_ID_SYS_BASE | 0x01)
 
 /**
+ * @brief           Run automatic test.
+ *
+ * @message.id      MSG_ID_SYS_RUN_AUTOMATIC_TEST
+ * @message.param0  None.
+ * @message.param1  None.
+ * @message.param2  None.
+ * @message.param3  None.
+ */
+#define MSG_ID_SYS_RUN_AUTOMATIC_TEST (MSG_ID_SYS_BASE | 0x02)
+
+/**
  * @brief           Set LED type.
  *
  * @message.id      MSG_ID_LED_SETUP

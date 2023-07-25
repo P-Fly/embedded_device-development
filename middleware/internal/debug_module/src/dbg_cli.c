@@ -205,6 +205,46 @@ int32_t dbg_cli_output(const char* format, ...)
     return ret;
 }
 
+#if defined (__ICCARM__) || defined (__ARMCC_VERSION)
+
+int fputc(int ch, FILE* f)
+{
+    char tempch = ch;
+    int32_t ret;
+
+    (void)f;
+
+    ret = dbg_uart_write(&tempch, 1);
+    if (ret < 0)
+    {
+        return -EIO;
+    }
+
+    return ch;
+}
+
+#elif defined(__GNUC__)
+
+int __io_putchar(int ch)
+{
+    char tempch = ch;
+    int32_t ret;
+
+    ret = dbg_uart_write(&tempch, 1);
+    if (ret < 0)
+    {
+        return -EIO;
+    }
+
+    return ch;
+}
+
+#else
+
+#error "Must be override the _write and _read to redirect printf."
+
+#endif
+
 /**
  * @brief   Get sys tick.
  *

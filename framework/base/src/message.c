@@ -29,6 +29,7 @@ typedef struct
 static const msg_id_str_mapping_t msg_id_str_mapping[] =
 {
     { MSG_ID_SYS_STARTUP_COMPLETED,   "SYS_STARTUP_COMPLETED"   },
+    { MSG_ID_SYS_RUN_AUTOMATIC_TEST,  "SYS_RUN_AUTOMATIC_TEST"  },
     { MSG_ID_LED_SETUP,               "LED_SETUP"               },
     { MSG_ID_BTN_STATE_NOTIFY,        "BTN_STATE_NOTIFY"        },
     { MSG_ID_BLE_SHCI_READY,          "BLE_SHCI_READY"          },

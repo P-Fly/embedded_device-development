@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>STM32WB55xx,USE_HAL_DRIVER,CORE_CM4,__ASSERT_MSG,USE_FULL_ASSERT</Define>
               <Undefine></Undefine>
-              <IncludePath>..\config;..\..\..\framework\base\inc;..\..\..\framework\services\mmi_service\inc;..\..\..\framework\services\led_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\middleware\external\FreeRTOS-Kernel\CMSIS_RTOS_V2;..\..\..\middleware\external\FreeRTOS-Kernel\include;..\..\..\middleware\external\FreeRTOS-Kernel\portable\RVDS\ARM_CM4F;..\..\..\middleware\external\FreeRTOS-Plus-CLI;..\..\..\middleware\internal\clock_manager\inc;..\..\..\middleware\internal\clock_manager\port\STM32WBxx;..\..\..\middleware\internal\led_manager\inc;..\..\..\middleware\internal\led_manager\port\STM32WBxx;..\..\..\middleware\internal\button_manager\inc;..\..\..\middleware\internal\button_manager\port\STM32WBxx;..\..\..\middleware\internal\crc_manager\inc;..\..\..\middleware\internal\crc_manager\port\STM32WBxx;..\..\..\middleware\internal\debug_module\inc;..\..\..\middleware\internal\debug_module\port\STM32WBxx;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\utils\ring_buff\inc</IncludePath>
+              <IncludePath>..\config;..\..\..\framework\base\inc;..\..\..\framework\services\mmi_service\inc;..\..\..\framework\services\led_service\inc;..\..\..\framework\services\button_service\inc;..\..\..\framework\services\tunit_service\inc;..\..\..\middleware\external\FreeRTOS-Kernel\CMSIS_RTOS_V2;..\..\..\middleware\external\FreeRTOS-Kernel\include;..\..\..\middleware\external\FreeRTOS-Kernel\portable\RVDS\ARM_CM4F;..\..\..\middleware\external\FreeRTOS-Plus-CLI;..\..\..\middleware\external\CUnit\include;..\..\..\middleware\internal\clock_manager\inc;..\..\..\middleware\internal\clock_manager\port\STM32WBxx;..\..\..\middleware\internal\led_manager\inc;..\..\..\middleware\internal\led_manager\port\STM32WBxx;..\..\..\middleware\internal\button_manager\inc;..\..\..\middleware\internal\button_manager\port\STM32WBxx;..\..\..\middleware\internal\crc_manager\inc;..\..\..\middleware\internal\crc_manager\port\STM32WBxx;..\..\..\middleware\internal\tunit_manager\inc;..\..\..\middleware\internal\debug_module\inc;..\..\..\middleware\internal\debug_module\port\STM32WBxx;..\..\..\driver\STM32WBxx\CMSIS\core\include;..\..\..\driver\STM32WBxx\CMSIS\device\include;..\..\..\driver\STM32WBxx\hal\inc;..\..\..\driver\STM32WBxx\machine\inc;..\..\..\utils\ring_buff\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -434,6 +434,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>framework\services\tunit_service</GroupName>
+          <Files>
+            <File>
+              <FileName>tunit_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\framework\services\tunit_service\src\tunit_service.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>middleware\external\FreeRTOS-Kernel</GroupName>
           <Files>
             <File>
@@ -504,6 +514,46 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>middleware\external\CUnit</GroupName>
+          <Files>
+            <File>
+              <FileName>Basic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\basic\Basic.c</FilePath>
+            </File>
+            <File>
+              <FileName>Console.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\console\Console.c</FilePath>
+            </File>
+            <File>
+              <FileName>CUError.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\framework\CUError.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyMem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\framework\MyMem.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestDB.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\framework\TestDB.c</FilePath>
+            </File>
+            <File>
+              <FileName>TestRun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\framework\TestRun.c</FilePath>
+            </File>
+            <File>
+              <FileName>Util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\external\CUnit\src\framework\Util.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>middleware\internal\clock_manager</GroupName>
           <Files>
             <File>
@@ -560,6 +610,16 @@
               <FileName>stm32wbxx_crc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\middleware\internal\crc_manager\port\STM32WBxx\stm32wbxx_crc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>middleware\internal\tunit_manager</GroupName>
+          <Files>
+            <File>
+              <FileName>tunit_manager.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\middleware\internal\tunit_manager\src\tunit_manager.c</FilePath>
             </File>
           </Files>
         </Group>
