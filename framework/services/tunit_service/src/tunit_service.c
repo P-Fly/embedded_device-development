@@ -33,8 +33,10 @@
  */
 typedef struct
 {
-    int32_t reserved;
+    const service_t* owner_svc;
 } tunit_service_priv_t;
+
+static tunit_service_priv_t tunit_service_priv;
 
 /**
  * @brief   Initialize the tunit service.
@@ -48,6 +50,8 @@ static int32_t tunit_service_init(const object* obj)
     tunit_service_priv_t* priv_data = service_get_priv_data(obj);
 
     (void)memset(priv_data, 0, sizeof(tunit_service_priv_t));
+
+    priv_data->owner_svc = service_get_svc(obj);
 
     tunit_info("Service <%s> initialize succeed.", obj->name);
 
@@ -124,10 +128,8 @@ int32_t tunit_service_run_tests(void)
 
     message.id = MSG_ID_SYS_RUN_AUTOMATIC_TEST;
 
-    return service_broadcast_message(&message);
+    return service_unicast_message(tunit_service_priv.owner_svc, &message);
 }
-
-static tunit_service_priv_t tunit_service_priv;
 
 static const service_config_t tunit_service_config =
 {

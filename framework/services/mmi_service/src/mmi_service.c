@@ -34,8 +34,10 @@
  */
 typedef struct
 {
-    int32_t reserved;
+    const service_t* owner_svc;
 } mmi_service_priv_t;
+
+static mmi_service_priv_t mmi_service_priv;
 
 /**
  * @brief   Private structure for client.
@@ -66,7 +68,7 @@ static void mmi_service_client_user_clbk(const void* user_ctx)
     message.id = MSG_ID_MMI_CLIENT_INPUT_NOTIFY;
     message.param0 = priv_data->type;
 
-    (void)service_broadcast_message(&message);
+    (void)service_unicast_message(mmi_service_priv.owner_svc, &message);
 }
 
 /**
@@ -110,6 +112,8 @@ static int32_t mmi_service_init(const object* obj)
 
     (void)memset(priv_data, 0, sizeof(mmi_service_priv_t));
     (void)memset(mmi_client_priv, 0, sizeof(mmi_client_priv));
+
+    priv_data->owner_svc = service_get_svc(obj);
 
     mmi_client_priv[MMI_CLI_DBG].type = MMI_CLI_DBG;
     mmi_client_priv[MMI_CLI_DBG].service_priv = priv_data;
@@ -228,8 +232,6 @@ static void mmi_service_message_handler(const object*           obj,
         break;
     }
 }
-
-static mmi_service_priv_t mmi_service_priv;
 
 static const service_config_t mmi_service_config =
 {

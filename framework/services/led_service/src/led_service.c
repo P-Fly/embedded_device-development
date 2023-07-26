@@ -33,8 +33,10 @@
  */
 typedef struct
 {
-    int32_t reserved;
+    const service_t* owner_svc;
 } led_service_priv_t;
+
+static led_service_priv_t led_service_priv;
 
 /**
  * @brief   Initialize the led service.
@@ -48,6 +50,8 @@ static int32_t led_service_init(const object* obj)
     led_service_priv_t* priv_data = service_get_priv_data(obj);
 
     (void)memset(priv_data, 0, sizeof(led_service_priv_t));
+
+    priv_data->owner_svc = service_get_svc(obj);
 
     led_info("Service <%s> initialize succeed.", obj->name);
 
@@ -135,10 +139,8 @@ int32_t led_service_setup(led_id_e id, led_type_e type)
     message.param0 = id;
     message.param1 = type;
 
-    return service_broadcast_message(&message);
+    return service_unicast_message(led_service_priv.owner_svc, &message);
 }
-
-static led_service_priv_t led_service_priv;
 
 static const service_config_t led_service_config =
 {

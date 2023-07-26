@@ -270,6 +270,20 @@ void* service_get_priv_data(const object* obj)
 }
 
 /**
+ * @brief   Get the service handle.
+ *
+ * @param   obj Pointer to the service object handle.
+ *
+ * @retval  Returns the service handle.
+ */
+service_t* service_get_svc(const object* obj)
+{
+    service_t* svc = (service_t*)obj->object_data;
+
+    return svc;
+}
+
+/**
  * @brief   Broadcast event messages to all services.
  *
  * @param   message Message structure to send.
@@ -286,7 +300,6 @@ int32_t service_broadcast_message(const message_t* message)
     const service_t* svc;
     osStatus_t stat;
     uint32_t timeout;
-    uint32_t isrm;
     BaseType_t is_irq = xPortIsInsideInterrupt();
 
     if (!message)
@@ -296,12 +309,10 @@ int32_t service_broadcast_message(const message_t* message)
 
     if (is_irq)
     {
-        isrm = taskENTER_CRITICAL_FROM_ISR();
         timeout = 0;
     }
     else
     {
-        taskENTER_CRITICAL();
         timeout = CONFIG_MSG_SEND_BLOCK_TIMEOUT_MS * osKernelGetTickFreq() /
                   1000;
     }
@@ -318,15 +329,6 @@ int32_t service_broadcast_message(const message_t* message)
                          message->id,
                          stat);
 
-                if (is_irq)
-                {
-                    taskEXIT_CRITICAL_FROM_ISR(isrm);
-                }
-                else
-                {
-                    taskEXIT_CRITICAL();
-                }
-
                 return -EPIPE;
             }
         }
@@ -340,14 +342,61 @@ int32_t service_broadcast_message(const message_t* message)
             message->param2,
             message->param3);
 
+    return 0;
+}
+
+/**
+ * @brief   Unicast event messages to a specified service.
+ *
+ * @param   svc Pointer to the service handle.
+ * @param   message Message structure to send.
+ *
+ * @retval  Returns 0 on success, negative error code otherwise.
+ */
+int32_t service_unicast_message(const service_t* svc, const message_t* message)
+{
+    osStatus_t stat;
+    uint32_t timeout;
+    BaseType_t is_irq = xPortIsInsideInterrupt();
+
+    if (!svc)
+    {
+        return -EINVAL;
+    }
+
+    if (!message)
+    {
+        return -EINVAL;
+    }
+
     if (is_irq)
     {
-        taskEXIT_CRITICAL_FROM_ISR(isrm);
+        timeout = 0;
     }
     else
     {
-        taskEXIT_CRITICAL();
+        timeout = CONFIG_MSG_SEND_BLOCK_TIMEOUT_MS * osKernelGetTickFreq() /
+                  1000;
     }
+
+    stat = osMessageQueuePut(svc->queue_id, message, NULL, timeout);
+    if (stat != osOK)
+    {
+        pr_error("Unicast %s(0x%x) failed, stat %d.",
+                 msg_id_to_str(message->id),
+                 message->id,
+                 stat);
+
+        return -EPIPE;
+    }
+
+    pr_info("Unicast %s(0x%x) succeed, 0x%x, 0x%x, 0x%x, 0x%x.",
+            msg_id_to_str(message->id),
+            message->id,
+            message->param0,
+            message->param1,
+            message->param2,
+            message->param3);
 
     return 0;
 }

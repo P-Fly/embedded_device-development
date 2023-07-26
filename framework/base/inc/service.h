@@ -69,7 +69,10 @@ extern int32_t service_shutdown(const object* obj);
 extern osThreadId_t service_get_thread_id(const object* obj);
 extern osMessageQueueId_t service_get_queue_id(const object* obj);
 extern void* service_get_priv_data(const object* obj);
+extern service_t* service_get_svc(const object* obj);
 extern int32_t service_broadcast_message(const message_t* message);
+extern int32_t service_unicast_message(const service_t* svc,
+                                       const message_t* message);
 
 #define DECLARE_SERVICE(service_name, \
                         service_label, \

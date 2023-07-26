@@ -35,10 +35,10 @@ static void button_service_user_clbk(button_id_e    id,
  */
 typedef struct
 {
-    int32_t reserved;
+    const service_t* owner_svc;
 } button_service_priv_t;
 
-
+static button_service_priv_t button_service_priv;
 
 /**
  * @brief   Initialize the button service.
@@ -53,6 +53,8 @@ static int32_t button_service_init(const object* obj)
     int32_t ret;
 
     (void)memset(priv_data, 0, sizeof(button_service_priv_t));
+
+    priv_data->owner_svc = service_get_svc(obj);
 
     ret =
         button_manager_register_user_clbk(button_service_user_clbk, priv_data);
@@ -137,8 +139,6 @@ static void button_service_user_clbk(button_id_e    id,
 
     (void)button_service_state_notify(id, state);
 }
-
-static button_service_priv_t button_service_priv;
 
 static const service_config_t button_service_config =
 {
