@@ -189,3 +189,44 @@ module_middleware(CONFIG_TUNIT_MANAGER_NAME,
                   tunit_manager_probe,
                   tunit_manager_shutdown,
                   NULL, &tunit_manager_handle, NULL);
+
+#ifdef CONFIG_TUNIT_MANAGER_INTERNAL_CASE_ENABLE
+static int tunit_bist_initialize(void)
+{
+    return 0;
+}
+
+static int tunit_bist_cleanup(void)
+{
+    return 0;
+}
+
+static void tunit_bist_case_1(void)
+{
+    TUNIT_TEST(1 == 1);
+    TUNIT_TEST('0' == 0x30);
+    TUNIT_TEST('a' == 0x61);
+}
+
+static void tunit_bist_case_2(void)
+{
+    CU_ASSERT_EQUAL(1, 1);
+    CU_ASSERT_EQUAL('0', 0x30);
+    CU_ASSERT_EQUAL('a', 0x61);
+}
+
+DECLARE_TUNIT_SUITE("Built-in self-test",
+                    bist,
+                    tunit_bist_initialize,
+                    tunit_bist_cleanup);
+
+DECLARE_TUNIT_CASE("Built-in self-test",
+                   "Test case 1",
+                   test_case_1,
+                   tunit_bist_case_1);
+
+DECLARE_TUNIT_CASE("Built-in self-test",
+                   "Test case 2",
+                   test_case_2,
+                   tunit_bist_case_2);
+#endif

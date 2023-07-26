@@ -76,6 +76,7 @@
 
 #define CONFIG_TUNIT_MANAGER_NAME "tunit manager"
 #define CONFIG_TUNIT_MANAGER_LABEL tunit_manager
+#define CONFIG_TUNIT_MANAGER_INTERNAL_CASE_ENABLE
 
 #define CONFIG_CRC_MANAGER_NAME "crc manager"
 #define CONFIG_CRC_MANAGER_LABEL crc_manager
