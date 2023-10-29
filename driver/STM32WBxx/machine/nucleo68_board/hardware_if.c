@@ -24,6 +24,8 @@
 #include "stm32wbxx.h"
 
 static void hardware_print_info(void);
+static void hardware_system_clock_config(void);
+static void hardware_periph_clock_config(void);
 
 /**
  * @brief   Startup hardware early.
@@ -35,6 +37,10 @@ static void hardware_print_info(void);
 void hardware_early_startup(void)
 {
     HAL_Init();
+
+    hardware_system_clock_config();
+
+    hardware_periph_clock_config();
 }
 
 /**
@@ -122,4 +128,98 @@ static void hardware_print_info(void)
     pr_info("");
     pr_info("*************************************************************");
     pr_info("");
+}
+
+/**
+ * @brief  Configure the system clock.
+ *
+ * @note   This API configures
+ *           - The system clock source
+ *           - The AHBCLK, APBCLK dividers
+ *           - The flash latency
+ *           - The PLL settings (when required)
+ *
+ * @param  None.
+ * @retval None.
+ */
+static void hardware_system_clock_config(void)
+{
+    RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+
+    /**
+     * Configure LSE Drive Capability
+     */
+    HAL_PWR_EnableBkUpAccess();
+    __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+
+    /**
+     * Configure the main internal regulator output voltage
+     */
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+    /**
+     * Initializes the CPU, AHB and APB busses clocks
+     */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI |
+                                       RCC_OSCILLATORTYPE_HSE |
+                                       RCC_OSCILLATORTYPE_LSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        assert(0);
+    }
+
+    /**
+     * Configure the SYSCLKSource, HCLK, PCLK1 and PCLK2 clocks dividers
+     */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK4 | RCC_CLOCKTYPE_HCLK2
+                                  | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                  | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.AHBCLK2Divider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.AHBCLK4Divider = RCC_SYSCLK_DIV1;
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+    {
+        assert(0);
+    }
+}
+
+/**
+ * @brief Peripherals clock configuration.
+ *
+ * @retval None.
+ */
+static void hardware_periph_clock_config(void)
+{
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
+
+    /**
+     * Initializes the peripherals clocks
+     */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SMPS |
+                                               RCC_PERIPHCLK_RFWAKEUP |
+                                               RCC_PERIPHCLK_RTC |
+                                               RCC_PERIPHCLK_USART1 |
+                                               RCC_PERIPHCLK_RNG;
+    PeriphClkInitStruct.SmpsClockSelection = RCC_SMPSCLKSOURCE_HSE;
+    PeriphClkInitStruct.SmpsDivSelection = RCC_SMPSCLKDIV_RANGE1;
+    PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_LSE;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+    PeriphClkInitStruct.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK2;
+    PeriphClkInitStruct.RngClockSelection = RCC_RNGCLKSOURCE_HSI48;
+
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    {
+        assert(0);
+    }
 }
